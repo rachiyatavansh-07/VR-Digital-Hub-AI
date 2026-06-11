@@ -23,7 +23,7 @@ if "previous_chats" not in st.session_state:
     st.session_state.previous_chats = []
 
 # ─────────────────────────────────────────────
-# 2. Global CSS — Full Cosmic Theme + VERTICAL HEADER FIX
+# 2. Global CSS — Full Cosmic Theme (100% UNTOUCHED ORIGINAL) + NEW HEADER FIX
 # ─────────────────────────────────────────────
 st.markdown("""
 <style>
@@ -40,20 +40,13 @@ html, body,
     color: #e2e8f0 !important;
 }
 
-/* ── 🔥 TUMHARA IDEA: TOP LINE KO RIGHT SIDE MEIN KHADA KAR DIYA 🔥 ── */
-header[data-testid="stHeader"], [data-testid="stHeader"] {
-    position: fixed !important;
-    top: 0 !important;
-    right: 0 !important; /* Ekdum right side bhej diya */
-    width: 0px !important; /* Patla kar diya */
-    height: 100vh !important; /* Lamba (Vertical) kar diya */
-    background: transparent !important;
-    background-color: transparent !important;
-    z-index: -9999 !important; /* Moon aur background ke piche chhipa diya */
-    opacity: 0 !important;
-    pointer-events: none !important;
+/* ── 🔥 NUCLEAR OPTION: HIDE DEFAULT STREAMLIT HEADER 🔥 ── */
+header[data-testid="stHeader"] {
+    visibility: hidden !important;
+    height: 0px !important;
+    padding: 0px !important;
+    display: none !important;
 }
-
 [data-testid="stDecoration"] { display: none !important; }
 [data-testid="collapsedControl"] { display: none !important; }
 [data-testid="stSidebar"] { display: none !important; }
@@ -239,6 +232,74 @@ hr { border: none !important; border-top: 1px solid #1c2535 !important; margin: 
 div.row-widget.stRadio > div { justify-content: center; gap: 20px; }
 div.row-widget.stRadio label { cursor: pointer; }
 [data-testid="stTable"] { background: rgba(14, 17, 26, 0.95); border-radius: 8px; overflow: hidden; }
+
+/* ── 🔥 NEW: FIXED BRANDING TEXT TOP RIGHT 🔥 ── */
+.top-header-brand {
+    position: fixed;
+    top: 15px;
+    right: 80px; /* White circle wali jagah chhodkar theek bagal mein */
+    z-index: 9999999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(10, 12, 20, 0.7);
+    padding: 8px 18px;
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+.brand-highlight {
+    background: linear-gradient(135deg, #FF007A 0%, #00F2FE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Arial Black', Impact, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.brand-sub {
+    color: #e2e8f0;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* ── 🔥 NATIVE POPOVER (HAMBURGER MENU) FIXED TO EXTREME TOP RIGHT 🔥 ── */
+div[data-testid="stPopover"] {
+    position: fixed !important;
+    top: 15px !important;
+    right: 15px !important; /* Ekdum kone mein jahan white circle draw kiya tha */
+    z-index: 9999999 !important;
+}
+div[data-testid="stPopover"] > button {
+    background: rgba(10, 12, 20, 0.8) !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    border-radius: 50% !important;
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
+    backdrop-filter: blur(12px) !important;
+    color: #00F2FE !important;
+    transition: all 0.3s ease !important;
+}
+div[data-testid="stPopover"] > button p {
+    font-size: 1.5rem !important;
+    font-weight: bold !important;
+    margin: 0 !important;
+    color: #00F2FE !important;
+}
+div[data-testid="stPopover"] > button:hover {
+    border-color: #00F2FE !important;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.4) !important;
+    transform: scale(1.05) !important;
+}
 </style>
 
 <div class="starfield-layer"></div>
@@ -254,6 +315,11 @@ div.row-widget.stRadio label { cursor: pointer; }
 <div class="sun-decal"></div>
 <div class="moon-decal"></div>
 
+<div class="top-header-brand">
+    <span class="brand-highlight">VR Digital Hub:</span>
+    <span class="brand-sub">AI Creative Boardroom</span>
+</div>
+
 <div class="footer">
     © 2026 VR Digital Hub AI. Advanced Boardroom Protocol v1.0. | Jaipur, India
     &nbsp;&nbsp;
@@ -264,7 +330,45 @@ div.row-widget.stRadio label { cursor: pointer; }
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
-# 3. Main Body Content
+# 3. 🔥 TOP RIGHT WORKING MENU (NATIVE POPOVER) 🔥
+# ─────────────────────────────────────────────
+# Yeh "☰" button ekdum white circle wali position (Top-Right edge) par fix hai
+with st.popover("☰"):
+    st.markdown("<h4 style='text-align: center; color: #00F2FE;'>MAIN MENU</h4>", unsafe_allow_html=True)
+    st.divider()
+    
+    # --- GEMINI STYLE: IMAGES FOLDER ---
+    with st.expander("🖼️ Images"):
+        st.error("Status: No image found. Please upload to sync visual data.")
+        uploaded_img = st.file_uploader("Upload Reference Image", type=["png", "jpg", "jpeg"])
+        if uploaded_img is not None:
+            st.success(f"Image '{uploaded_img.name}' loaded securely.")
+
+    # --- GEMINI STYLE: SEARCH & HISTORY FOLDER ---
+    with st.expander("💬 Search & View Chats"):
+        search_query = st.text_input("🔍 Search Archives", placeholder="Search past concepts...")
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        if not st.session_state.previous_chats:
+            st.caption("No history yet. Start a protocol!")
+        else:
+            filtered_chats = st.session_state.previous_chats
+            if search_query:
+                filtered_chats = [
+                    c for c in filtered_chats 
+                    if search_query.lower() in c['brief'].lower() or search_query.lower() in c['strategy'].lower()
+                ]
+                
+            if not filtered_chats:
+                st.warning("No matching records found in archives.")
+            else:
+                for record in filtered_chats:
+                    with st.expander(f"📌 {record['brief'][:20]}..."):
+                        st.caption(f"Category: {record['category']}")
+                        st.write(record['strategy'])
+
+# ─────────────────────────────────────────────
+# 4. Main Body Content
 # ─────────────────────────────────────────────
 st.title("The AI Creative Boardroom")
 st.markdown(
@@ -307,7 +411,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 launch = st.button("Initialize Boardroom Protocol 🚀", use_container_width=True)
 
 # ─────────────────────────────────────────────
-# 4. Dynamic Persona Logic Setup
+# 5. Dynamic Persona Logic Setup
 # ─────────────────────────────────────────────
 if problem_category == "Business & Marketing":
     a1_name = "Gen-Z Trendsetter"
@@ -353,7 +457,7 @@ else:
     max_tok = 700
 
 # ─────────────────────────────────────────────
-# 5. Agent Execution Logic
+# 6. Agent Execution Logic
 # ─────────────────────────────────────────────
 if launch:
     if not client_brief.strip():
@@ -474,45 +578,3 @@ if launch:
 
         except Exception as e:
             st.error(f"⚠️ System Exception during protocol execution:\n\n`{e}`")
-
-
-# ─────────────────────────────────────────────
-# 6. RESTRUCTURED GEMINI-STYLE FOOTER SECTION
-# ─────────────────────────────────────────────
-st.divider()
-st.markdown("<br><br>", unsafe_allow_html=True)
-
-footer_col1, footer_col2 = st.columns(2)
-
-# ── COLUMN 1: CHATS & HISTORY ──
-with footer_col1:
-    with st.expander("💬 Chats & History (Session Archives)"):
-        st.markdown("<p style='color: #8aa4be; font-size: 0.8rem; font-weight:bold;'>View Session History</p>", unsafe_allow_html=True)
-        search_query = st.text_input("🔍 Search Past Concepts", placeholder="Search archives...")
-        
-        if not st.session_state.previous_chats:
-            st.caption("No history yet. Start a protocol!")
-        else:
-            filtered_chats = st.session_state.previous_chats
-            if search_query:
-                filtered_chats = [
-                    c for c in filtered_chats 
-                    if search_query.lower() in c['brief'].lower() or search_query.lower() in c['strategy'].lower()
-                ]
-            
-            if not filtered_chats:
-                st.warning("No matching records found in archives.")
-            else:
-                for record in filtered_chats:
-                    with st.expander(f"📌 {record['brief'][:20]}..."):
-                        st.caption(f"Category: {record['category']} | Confidence: 97%")
-                        st.write(record['strategy'])
-
-# ── COLUMN 2: IMAGES ──
-with footer_col2:
-    with st.expander("🖼️ Images (Visual Reference Hub)"):
-        st.markdown("<p style='color: #8aa4be; font-size: 0.8rem; font-weight:bold;'>View Saved Image & Uploads</p>", unsafe_allow_html=True)
-        
-        with st.expander("Saved & Uploaded Images (AI Reference)"):
-            st.error("Status: Image not found. Please upload to sync visual data.")
-            st.file_uploader("Upload Image", type=["png", "jpg", "jpeg"])
