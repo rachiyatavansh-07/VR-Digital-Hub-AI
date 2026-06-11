@@ -23,7 +23,7 @@ if "previous_chats" not in st.session_state:
     st.session_state.previous_chats = []
 
 # ─────────────────────────────────────────────
-# 2. Global CSS — Full Cosmic Theme (100% UNTOUCHED ORIGINAL) + NEW HEADER FIX
+# 2. Global CSS — Full Cosmic Theme (100% UNTOUCHED ORIGINAL) + CLAUDE FIX
 # ─────────────────────────────────────────────
 st.markdown("""
 <style>
@@ -40,16 +40,136 @@ html, body,
     color: #e2e8f0 !important;
 }
 
-/* ── 🔥 NUCLEAR OPTION: HIDE DEFAULT STREAMLIT HEADER 🔥 ── */
+/* ═══════════════════════════════════════════════
+   🔥 BULLETPROOF HEADER OVERRIDE — CLAUDE FIX 🔥
+   ═══════════════════════════════════════════════ */
+/* ── 1. FULLY NEUTRALIZE DEFAULT STREAMLIT HEADER ── */
 header[data-testid="stHeader"] {
+    display: none !important;
     visibility: hidden !important;
     height: 0px !important;
+    min-height: 0px !important;
+    max-height: 0px !important;
     padding: 0px !important;
-    display: none !important;
+    margin: 0px !important;
+    overflow: hidden !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    position: absolute !important;
+    pointer-events: none !important;
 }
-[data-testid="stDecoration"] { display: none !important; }
-[data-testid="collapsedControl"] { display: none !important; }
-[data-testid="stSidebar"] { display: none !important; }
+/* ── 2. KILL THE TOOLBAR (Deploy/Settings icons) ── */
+[data-testid="stToolbar"],
+[data-testid="stDecoration"],
+[data-testid="stDeployButton"],
+#MainMenu,
+.stDeployButton {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+}
+/* ── 3. REMOVE TOP PADDING STREAMLIT ADDS FOR THE HEADER ── */
+[data-testid="stAppViewContainer"] > section:first-child {
+    padding-top: 0 !important;
+}
+[data-testid="stMain"] {
+    padding-top: 0 !important;
+}
+/* ── 4. CUSTOM BRANDING PILL — TOP RIGHT ── */
+.top-header-brand {
+    position: fixed !important;
+    top: 12px !important;
+    right: 68px !important;   /* leaves exactly 56px gap for the ☰ button */
+    z-index: 2147483647 !important;  /* MAX z-index, beats everything */
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: rgba(10, 12, 20, 0.75) !important;
+    padding: 7px 16px !important;
+    border-radius: 30px !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+    white-space: nowrap !important;
+    pointer-events: none !important;   /* clicks pass through the pill itself */
+}
+.brand-highlight {
+    background: linear-gradient(135deg, #FF007A 0%, #00F2FE 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    font-family: 'Arial Black', Impact, sans-serif !important;
+    font-size: 1.0rem !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+.brand-sub {
+    color: #e2e8f0 !important;
+    font-family: 'Segoe UI', Tahoma, sans-serif !important;
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+}
+/* ── 5. HAMBURGER POPOVER — PINNED TO EXTREME TOP-RIGHT ── */
+#vr-menu-anchor {
+    position: fixed !important;
+    top: 10px !important;
+    right: 12px !important;
+    z-index: 2147483647 !important;
+    width: 46px !important;
+    height: 46px !important;
+}
+#vr-menu-anchor [data-testid="stPopover"],
+#vr-menu-anchor div[data-testid="stPopover"] {
+    position: static !important;  
+    margin: 0 !important;
+    padding: 0 !important;
+}
+#vr-menu-anchor [data-testid="stPopover"] > button,
+#vr-menu-anchor div[data-testid="stPopover"] > button {
+    background: rgba(10, 12, 20, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    border-radius: 50% !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65) !important;
+    backdrop-filter: blur(14px) !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+#vr-menu-anchor [data-testid="stPopover"] > button p {
+    font-size: 1.4rem !important;
+    margin: 0 !important;
+    color: #00F2FE !important;
+    -webkit-text-fill-color: #00F2FE !important;
+}
+#vr-menu-anchor [data-testid="stPopover"] > button:hover {
+    border-color: #00F2FE !important;
+    box-shadow: 0 0 18px rgba(0, 242, 254, 0.45) !important;
+    transform: scale(1.07) !important;
+}
+/* Mobile adjust */
+@media (max-width: 768px) {
+    .top-header-brand {
+        right: 60px !important;
+        padding: 6px 10px !important;
+        font-size: 0.8rem !important;
+    }
+    .brand-highlight { font-size: 0.82rem !important; }
+    .brand-sub { font-size: 0.75rem !important; }
+    #vr-menu-anchor { top: 8px !important; right: 8px !important; }
+}
 
 /* ── GENTLE TWINKLE EFFECT ───────────────── */
 @keyframes gentleBlink {
@@ -217,8 +337,11 @@ hr { border: none !important; border-top: 1px solid #1c2535 !important; margin: 
 /* ── FOOTER ───────────────────────────────── */
 .footer { position: fixed; left: 0; bottom: 0; width: 100%; background: rgba(3, 4, 8, 0.97); color: #3d4f62; text-align: center; padding: 10px 0 8px; border-top: 1px solid #0e1420; font-size: 11px; z-index: 999; }
 .footer a { color: #3d5468; text-decoration: none; margin: 0 10px; } .footer a:hover { color: #00F2FE; }
-[data-testid="stToolbar"], footer[data-testid="stBottom"] { visibility: hidden !important; height: 0 !important; }
-[data-testid="stAlert"] { background: transparent !important; border: none !important; padding: 0 !important; }
+
+/* ── GEMINI STYLE SELECTOR CENTERING ── */
+div.row-widget.stRadio > div { justify-content: center; gap: 20px; }
+div.row-widget.stRadio label { cursor: pointer; }
+[data-testid="stTable"] { background: rgba(14, 17, 26, 0.95); border-radius: 8px; overflow: hidden; }
 
 /* ── MOBILE RESPONSIVENESS FIX ── */
 @media (max-width: 768px) {
@@ -227,78 +350,6 @@ hr { border: none !important; border-top: 1px solid #1c2535 !important; margin: 
     [data-testid="stMainBlockContainer"], .block-container { margin-top: 2rem !important; padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
     h1 { font-size: 1.8rem !important; }
     div.row-widget.stRadio > div { flex-direction: column !important; }
-}
-
-div.row-widget.stRadio > div { justify-content: center; gap: 20px; }
-div.row-widget.stRadio label { cursor: pointer; }
-[data-testid="stTable"] { background: rgba(14, 17, 26, 0.95); border-radius: 8px; overflow: hidden; }
-
-/* ── 🔥 NEW: FIXED BRANDING TEXT TOP RIGHT 🔥 ── */
-.top-header-brand {
-    position: fixed;
-    top: 15px;
-    right: 80px; /* White circle wali jagah chhodkar theek bagal mein */
-    z-index: 9999999;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(10, 12, 20, 0.7);
-    padding: 8px 18px;
-    border-radius: 30px;
-    border: 1px solid rgba(255,255,255,0.15);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-.brand-highlight {
-    background: linear-gradient(135deg, #FF007A 0%, #00F2FE 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-family: 'Arial Black', Impact, sans-serif;
-    font-size: 1.05rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.brand-sub {
-    color: #e2e8f0;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-/* ── 🔥 NATIVE POPOVER (HAMBURGER MENU) FIXED TO EXTREME TOP RIGHT 🔥 ── */
-div[data-testid="stPopover"] {
-    position: fixed !important;
-    top: 15px !important;
-    right: 15px !important; /* Ekdum kone mein jahan white circle draw kiya tha */
-    z-index: 9999999 !important;
-}
-div[data-testid="stPopover"] > button {
-    background: rgba(10, 12, 20, 0.8) !important;
-    border: 1px solid rgba(255,255,255,0.25) !important;
-    border-radius: 50% !important;
-    width: 44px !important;
-    height: 44px !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
-    backdrop-filter: blur(12px) !important;
-    color: #00F2FE !important;
-    transition: all 0.3s ease !important;
-}
-div[data-testid="stPopover"] > button p {
-    font-size: 1.5rem !important;
-    font-weight: bold !important;
-    margin: 0 !important;
-    color: #00F2FE !important;
-}
-div[data-testid="stPopover"] > button:hover {
-    border-color: #00F2FE !important;
-    box-shadow: 0 0 15px rgba(0, 242, 254, 0.4) !important;
-    transform: scale(1.05) !important;
 }
 </style>
 
@@ -315,11 +366,6 @@ div[data-testid="stPopover"] > button:hover {
 <div class="sun-decal"></div>
 <div class="moon-decal"></div>
 
-<div class="top-header-brand">
-    <span class="brand-highlight">VR Digital Hub:</span>
-    <span class="brand-sub">AI Creative Boardroom</span>
-</div>
-
 <div class="footer">
     © 2026 VR Digital Hub AI. Advanced Boardroom Protocol v1.0. | Jaipur, India
     &nbsp;&nbsp;
@@ -330,21 +376,31 @@ div[data-testid="stPopover"] > button:hover {
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
-# 3. 🔥 TOP RIGHT WORKING MENU (NATIVE POPOVER) 🔥
+# 3. 🔥 BULLETPROOF TOP-RIGHT HEADER + MENU 🔥
 # ─────────────────────────────────────────────
-# Yeh "☰" button ekdum white circle wali position (Top-Right edge) par fix hai
+# Inject the brand pill HTML (pointer-events:none so clicks pass through)
+st.markdown(
+    """
+    <div class="top-header-brand">
+        <span class="brand-highlight">VR Digital Hub:</span>
+        <span class="brand-sub">AI Creative Boardroom</span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Anchor div wraps the popover so CSS can grab it with #vr-menu-anchor
+st.markdown('<div id="vr-menu-anchor">', unsafe_allow_html=True)
 with st.popover("☰"):
     st.markdown("<h4 style='text-align: center; color: #00F2FE;'>MAIN MENU</h4>", unsafe_allow_html=True)
     st.divider()
     
-    # --- GEMINI STYLE: IMAGES FOLDER ---
     with st.expander("🖼️ Images"):
         st.error("Status: No image found. Please upload to sync visual data.")
         uploaded_img = st.file_uploader("Upload Reference Image", type=["png", "jpg", "jpeg"])
         if uploaded_img is not None:
             st.success(f"Image '{uploaded_img.name}' loaded securely.")
-
-    # --- GEMINI STYLE: SEARCH & HISTORY FOLDER ---
+            
     with st.expander("💬 Search & View Chats"):
         search_query = st.text_input("🔍 Search Archives", placeholder="Search past concepts...")
         st.markdown("<br>", unsafe_allow_html=True)
@@ -355,10 +411,9 @@ with st.popover("☰"):
             filtered_chats = st.session_state.previous_chats
             if search_query:
                 filtered_chats = [
-                    c for c in filtered_chats 
+                    c for c in filtered_chats
                     if search_query.lower() in c['brief'].lower() or search_query.lower() in c['strategy'].lower()
                 ]
-                
             if not filtered_chats:
                 st.warning("No matching records found in archives.")
             else:
@@ -366,6 +421,8 @@ with st.popover("☰"):
                     with st.expander(f"📌 {record['brief'][:20]}..."):
                         st.caption(f"Category: {record['category']}")
                         st.write(record['strategy'])
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
 # 4. Main Body Content
@@ -578,3 +635,42 @@ if launch:
 
         except Exception as e:
             st.error(f"⚠️ System Exception during protocol execution:\n\n`{e}`")
+
+
+# ─────────────────────────────────────────────
+# 7. BOTTOM HISTORY CARDS (Footer Display)
+# ─────────────────────────────────────────────
+st.divider()
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+footer_col1, footer_col2 = st.columns(2)
+
+with footer_col1:
+    with st.expander("💬 Chats & History (Session Archives)"):
+        st.markdown("<p style='color: #8aa4be; font-size: 0.8rem; font-weight:bold;'>View Session History</p>", unsafe_allow_html=True)
+        search_query_bottom = st.text_input("🔍 Search Past Concepts", placeholder="Search archives...", key="bottom_search")
+        
+        if not st.session_state.previous_chats:
+            st.caption("No history yet. Start a protocol!")
+        else:
+            filtered_chats_bot = st.session_state.previous_chats
+            if search_query_bottom:
+                filtered_chats_bot = [
+                    c for c in filtered_chats_bot 
+                    if search_query_bottom.lower() in c['brief'].lower() or search_query_bottom.lower() in c['strategy'].lower()
+                ]
+            
+            if not filtered_chats_bot:
+                st.warning("No matching records found in archives.")
+            else:
+                for record in filtered_chats_bot:
+                    with st.expander(f"📌 {record['brief'][:20]}..."):
+                        st.caption(f"Category: {record['category']} | Confidence: 97%")
+                        st.write(record['strategy'])
+
+with footer_col2:
+    with st.expander("🖼️ Images (Visual Reference Hub)"):
+        st.markdown("<p style='color: #8aa4be; font-size: 0.8rem; font-weight:bold;'>View Saved Image & Uploads</p>", unsafe_allow_html=True)
+        with st.expander("Saved & Uploaded Images (AI Reference)"):
+            st.error("Status: Image not found. Please upload to sync visual data.")
+            st.file_uploader("Upload Image", type=["png", "jpg", "jpeg"], key="bottom_upload")
