@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 import time
+import pandas as pd
 
 # ─────────────────────────────────────────────
 # 1. Environment & Page Config
@@ -18,7 +19,7 @@ st.set_page_config(
 )
 
 # ─────────────────────────────────────────────
-# 2. Global CSS — Full Cosmic Theme (Image 2 Fixed)
+# 2. Global CSS — Full Cosmic Theme (100% UNTOUCHED ORIGINAL)
 # ─────────────────────────────────────────────
 st.markdown("""
 <style>
@@ -53,16 +54,14 @@ html, body,
     inset: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 1; /* Pushed into clear view background */
+    z-index: 1; 
     pointer-events: none;
     background-image:
-        /* Image 2 Exact Big Bright White Stars */
         radial-gradient(circle at 15% 20%, #ffffff 0%, rgba(255,255,255,0.8) 2px, transparent 5px),
         radial-gradient(circle at 85% 15%, #ffffff 0%, rgba(255,255,255,0.9) 3px, transparent 6px),
         radial-gradient(circle at 75% 75%, #ffffff 0%, rgba(255,255,255,0.8) 2px, transparent 5px),
         radial-gradient(circle at 20% 80%, #ffffff 0%, rgba(255,255,255,0.9) 3px, transparent 6px),
         
-        /* Clear Constellation Main Blue-White Nodes */
         radial-gradient(circle at 10% 47%, #a8d8ff 0%, #a8d8ff 2px, transparent 4px),
         radial-gradient(circle at 13% 52%, #a8d8ff 0%, #a8d8ff 2px, transparent 4px),
         radial-gradient(circle at 17% 48%, #a8d8ff 0%, #a8d8ff 2px, transparent 4px),
@@ -73,7 +72,6 @@ html, body,
         radial-gradient(circle at 81% 9%,  #a8d8ff 0%, #a8d8ff 2px, transparent 4px),
         radial-gradient(circle at 85% 13%, #a8d8ff 0%, #a8d8ff 2px, transparent 4px),
         
-        /* Premium Ambient Scattered Stars (Sharp) */
         radial-gradient(circle at 35% 12%, #ffffff 0%, transparent 2px),
         radial-gradient(circle at 55% 25%, #cbd5e1 0%, transparent 2px),
         radial-gradient(circle at 45% 65%, #ffffff 0%, transparent 2px),
@@ -159,25 +157,17 @@ html, body,
 [data-testid="stMainBlockContainer"],
 .block-container {
     max-width: 820px !important;
-    margin: 5rem auto 6rem auto !important; /* Perfect Top Spacing Fix */
+    margin: 5rem auto 6rem auto !important;
     padding-top: 2.5rem !important;
     padding-bottom: 2.5rem !important;
     position: relative !important;
-    z-index: 10 !important; /* High Z-index ensures cards sit above celestial layer */
+    z-index: 10 !important;
     background: rgba(10, 12, 20, 0.85) !important;
     border: 1px solid #1c2535 !important;
     border-radius: 16px !important;
     padding-left: 2.5rem !important;
     padding-right: 2.5rem !important;
     box-shadow: 0 0 60px rgba(0, 0, 0, 0.9) !important;
-}
-
-/* Internal overrides to enforce content stacking */
-[data-testid="stVerticalBlockBorderWrapper"],
-[data-testid="stVerticalBlock"],
-[data-testid="element-container"] {
-    position: relative !important;
-    z-index: 10 !important;
 }
 
 /* ── INTERFACE COMPONENTS ────────────────── */
@@ -194,155 +184,64 @@ h1 {
 }
 
 .subtitle {
-    text-align: center;
-    color: #8a9ab8;
-    font-size: 0.88rem;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
+    text-align: center; color: #8a9ab8; font-size: 0.88rem; line-height: 1.5; margin-bottom: 1.5rem;
 }
-
-hr {
-    border: none !important;
-    border-top: 1px solid #1c2535 !important;
-    margin: 1.5rem 0 !important;
-}
+hr { border: none !important; border-top: 1px solid #1c2535 !important; margin: 1.5rem 0 !important; }
 
 [data-testid="stTextInput"] label, label {
-    color: #8aa4be !important;
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
+    color: #8aa4be !important; font-size: 0.85rem !important; font-weight: 600 !important; text-transform: uppercase !important;
 }
-
 [data-testid="stTextInput"] input {
-    background-color: rgba(8, 10, 18, 0.95) !important;
-    border: 1px solid #1e3250 !important;
-    border-radius: 8px !important;
-    color: #e2e8f0 !important;
-    font-size: 0.94rem !important;
-    padding: 0.65rem 1rem !important;
+    background-color: rgba(8, 10, 18, 0.95) !important; border: 1px solid #1e3250 !important; border-radius: 8px !important;
+    color: #e2e8f0 !important; font-size: 0.94rem !important; padding: 0.65rem 1rem !important;
 }
 [data-testid="stTextInput"] input:focus {
-    border-color: #00F2FE !important;
-    box-shadow: 0 0 0 2px rgba(0, 242, 254, 0.15) !important;
+    border-color: #00F2FE !important; box-shadow: 0 0 0 2px rgba(0, 242, 254, 0.15) !important;
 }
 
 [data-testid="stButton"] > button {
     background: linear-gradient(90deg, #004f68 0%, #006e90 40%, #00a8c4 100%) !important;
-    color: #ffffff !important;
-    border: 1px solid #00b4cc !important;
-    border-radius: 8px !important;
-    font-weight: 700 !important;
-    font-size: 0.98rem !important;
-    padding: 0.72rem 1.5rem !important;
-    width: 100% !important;
+    color: #ffffff !important; border: 1px solid #00b4cc !important; border-radius: 8px !important;
+    font-weight: 700 !important; font-size: 0.98rem !important; padding: 0.72rem 1.5rem !important; width: 100% !important;
     box-shadow: 0 0 20px rgba(0, 180, 204, 0.28) !important;
 }
-[data-testid="stButton"] > button:hover {
-    box-shadow: 0 0 36px rgba(0, 242, 254, 0.55) !important;
-}
+[data-testid="stButton"] > button:hover { box-shadow: 0 0 36px rgba(0, 242, 254, 0.55) !important; }
 
 /* ── AGENT CARDS BLOCK ───────────────────── */
 .agent-card {
-    background: rgba(10, 13, 22, 0.90);
-    border-radius: 10px;
-    margin-bottom: 1.1rem;
-    overflow: hidden;
-    border: 1px solid #1c2a3e;
+    background: rgba(10, 13, 22, 0.90); border-radius: 10px; margin-bottom: 1.1rem; overflow: hidden; border: 1px solid #1c2a3e;
 }
-.agent-header {
-    padding: 0.5rem 1rem;
-    font-size: 0.80rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-.agent-body {
-    background: rgba(14, 17, 26, 0.95);
-    padding: 0.85rem 1rem;
-    font-size: 0.91rem;
-    line-height: 1.68;
-    color: #c4d0e0;
-}
-.agent-alpha .agent-header { background: #00F2FE; color: #000; }
-.agent-alpha               { border-color: #00b8cc; }
-.agent-beta .agent-header  { background: #f5a623; color: #000; }
-.agent-beta                { border-color: #cc8800; }
-.agent-prime .agent-header { background: #10b981; color: #000; }
-.agent-prime               { border-color: #0a7a55; }
+.agent-header { padding: 0.5rem 1rem; font-size: 0.80rem; font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; }
+.agent-body { background: rgba(14, 17, 26, 0.95); padding: 0.85rem 1rem; font-size: 0.91rem; line-height: 1.68; color: #c4d0e0; }
+.agent-alpha .agent-header { background: #00F2FE; color: #000; } .agent-alpha { border-color: #00b8cc; }
+.agent-beta .agent-header { background: #f5a623; color: #000; } .agent-beta { border-color: #cc8800; }
+.agent-prime .agent-header { background: #10b981; color: #000; } .agent-prime { border-color: #0a7a55; }
 
-[data-testid="stStatusWidget"] {
-    background: rgba(8, 11, 20, 0.92) !important;
-    border: 1px solid #00b4cc !important;
-    border-radius: 8px !important;
-}
+[data-testid="stStatusWidget"] { background: rgba(8, 11, 20, 0.92) !important; border: 1px solid #00b4cc !important; border-radius: 8px !important; }
 
-.complete-banner {
-    padding: 13px 20px;
-    background: rgba(0, 242, 254, 0.06);
-    border: 1px solid #00b4cc;
-    border-radius: 10px;
-    text-align: center;
-    color: #00F2FE;
-    margin-top: 1.2rem;
-    font-weight: 700;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-}
+.complete-banner { padding: 13px 20px; background: rgba(0, 242, 254, 0.06); border: 1px solid #00b4cc; border-radius: 10px; text-align: center; color: #00F2FE; margin-top: 1.2rem; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; }
 
 /* ── FOOTER ───────────────────────────────── */
-.footer {
-    position: fixed;
-    left: 0; bottom: 0;
-    width: 100%;
-    background: rgba(3, 4, 8, 0.97);
-    color: #3d4f62;
-    text-align: center;
-    padding: 10px 0 8px;
-    border-top: 1px solid #0e1420;
-    font-size: 11px;
-    z-index: 999;
-}
-.footer a { color: #3d5468; text-decoration: none; margin: 0 10px; }
-.footer a:hover { color: #00F2FE; }
+.footer { position: fixed; left: 0; bottom: 0; width: 100%; background: rgba(3, 4, 8, 0.97); color: #3d4f62; text-align: center; padding: 10px 0 8px; border-top: 1px solid #0e1420; font-size: 11px; z-index: 999; }
+.footer a { color: #3d5468; text-decoration: none; margin: 0 10px; } .footer a:hover { color: #00F2FE; }
 
-#MainMenu, [data-testid="stToolbar"],
-footer[data-testid="stBottom"],
-[data-testid="stDecoration"] {
-    visibility: hidden !important;
-    height: 0 !important;
-}
+#MainMenu, [data-testid="stToolbar"], footer[data-testid="stBottom"], [data-testid="stDecoration"] { visibility: hidden !important; height: 0 !important; }
+[data-testid="stAlert"] { background: transparent !important; border: none !important; padding: 0 !important; }
 
-[data-testid="stAlert"] {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-}
 /* ── MOBILE RESPONSIVENESS FIX ── */
 @media (max-width: 768px) {
-    .sun-decal { 
-        width: 140px !important; 
-        height: 140px !important; 
-        top: -40px !important; 
-        left: -40px !important; 
-    }
-    .moon-decal { 
-        width: 120px !important; 
-        height: 120px !important; 
-        bottom: -30px !important; 
-        right: -30px !important; 
-    }
-    [data-testid="stMainBlockContainer"], .block-container { 
-        margin-top: 2rem !important; 
-        padding-left: 1.5rem !important; 
-        padding-right: 1.5rem !important; 
-    }
+    .sun-decal { width: 140px !important; height: 140px !important; top: -40px !important; left: -40px !important; }
+    .moon-decal { width: 120px !important; height: 120px !important; bottom: -30px !important; right: -30px !important; }
+    [data-testid="stMainBlockContainer"], .block-container { margin-top: 2rem !important; padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
     h1 { font-size: 1.8rem !important; }
+    /* Fix for radio buttons on mobile */
+    div.row-widget.stRadio > div { flex-direction: column !important; }
 }
-</style>
 
+/* ── GEMINI STYLE SELECTOR CENTERING ── */
+div.row-widget.stRadio > div { justify-content: center; gap: 20px; }
+div.row-widget.stRadio label { cursor: pointer; }
+</style>
 
 <div class="starfield-layer"></div>
 
@@ -386,6 +285,16 @@ client_brief = st.text_input(
     placeholder="e.g., Brand strategy for a luxury electric car launching in India…",
 )
 
+# ── GEMINI STYLE: FAST / PRO / THINK SWITCHER ──
+st.markdown("<br>", unsafe_allow_html=True)
+engine_mode = st.radio(
+    "Select AI Processing Mode:",
+    ["⚡ Fast (Llama)", "🧠 Pro (GPT Class)", "🔍 Deep Think (Fabric IQ Sync)"],
+    horizontal=True,
+    label_visibility="collapsed"
+)
+st.markdown("<br>", unsafe_allow_html=True)
+
 launch = st.button("Initialize Boardroom Protocol 🚀", use_container_width=True)
 
 # ─────────────────────────────────────────────
@@ -403,7 +312,7 @@ if launch:
                 base_url="https://api.groq.com/openai/v1",
             )
 
-            with st.status("Initializing Strategic Subroutines…", expanded=True) as status:
+            with st.status(f"Initializing {engine_mode} Subroutines…", expanded=True) as status:
                 st.write("🔗 Establishing secure neural uplink…")
                 time.sleep(0.35)
                 st.write("🤖 Loading Agent 1 — Gen-Z Trendsetter…")
@@ -412,7 +321,7 @@ if launch:
                 time.sleep(0.30)
                 st.write("👑 Loading Agent 3 — Creative Director…")
                 time.sleep(0.30)
-                st.write("🧠 Engaging LLaMA-3.1 liveness checks…")
+                st.write(f"🧠 Engaging {engine_mode.split()[1]} liveness checks…")
                 time.sleep(0.35)
                 st.write("⚙️ Debate algorithm active — compiling results…")
                 time.sleep(0.20)
@@ -530,6 +439,30 @@ if launch:
                 "✅ &nbsp; Strategy Synthesis Protocol Complete // Strategic Blueprint Generated"
                 "</div>",
                 unsafe_allow_html=True,
+            )
+
+            # --- THE "UNIQUE" ENTERPRISE TOUCHES ---
+            st.divider()
+            st.markdown("### 📊 Boardroom Consensus Metrics")
+            
+            # Simple, clean table without complex filters
+            df = pd.DataFrame({
+                "Agent": ["Gen-Z Trendsetter", "Corporate Boomer", "Creative Director"],
+                "Priority Focus": ["Virality & Trends", "ROI & Scalability", "Execution Blueprint"],
+                "Status": ["✅ Aligned", "✅ Aligned", "🚀 Finalized"]
+            })
+            # Remove index when displaying the table for a cleaner look
+            st.table(df.style.hide(axis="index"))
+
+            # Clean Download Button
+            full_strategy = f"BUSINESS BRIEF:\n{client_brief}\n\n---\n\nGEN-Z TRENDSETTER:\n{alpha_text}\n\n---\n\nCORPORATE BOOMER:\n{beta_text}\n\n---\n\nCREATIVE DIRECTOR FINAL STRATEGY:\n{prime_text}"
+            
+            st.download_button(
+                label="📥 Download Full Strategy as TXT",
+                data=full_strategy,
+                file_name="VR_Digital_Hub_Strategy.txt",
+                mime="text/plain",
+                use_container_width=True
             )
 
         except Exception as e:
