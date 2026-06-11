@@ -542,7 +542,7 @@ if launch:
             
             # --- AGENT 1 ---
             resp1 = client.chat.completions.create(
-                model="llama-3.1-8b-instant", max_tokens=250,
+                model="llama-3.1-8b-instant", max_tokens=300,
                 messages=[
                     {"role": "system", "content": a1_prompt},
                     {"role": "user", "content": f"Address this brief: {client_brief}. Keep it short and in your persona."},
@@ -560,7 +560,7 @@ if launch:
 
             # --- AGENT 2 ---
             resp2 = client.chat.completions.create(
-                model="llama-3.1-8b-instant", max_tokens=250,
+                model="llama-3.1-8b-instant", max_tokens=500,
                 messages=[
                     {"role": "system", "content": a2_prompt},
                     {"role": "user", "content": f"Brief: {client_brief}\nAgent 1 said: '{alpha_text}'. Give your strict counter-perspective."},
