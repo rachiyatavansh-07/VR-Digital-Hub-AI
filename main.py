@@ -23,7 +23,7 @@ if "previous_chats" not in st.session_state:
     st.session_state.previous_chats = []
 
 # ─────────────────────────────────────────────
-# 2. Global CSS — Full Cosmic Theme (100% UNTOUCHED ORIGINAL) + NEW HEADER FIX
+# 2. Global CSS — Full Cosmic Theme (100% UNTOUCHED ORIGINAL) + HEADER LINE FIX
 # ─────────────────────────────────────────────
 st.markdown("""
 <style>
@@ -40,12 +40,16 @@ html, body,
     color: #e2e8f0 !important;
 }
 
-/* ── 🔥 NUCLEAR OPTION: HIDE DEFAULT STREAMLIT HEADER 🔥 ── */
+/* ── 🔥 FIX: HIDE THE BLACK LINE (STREAMLIT HEADER) 🔥 ── */
+[data-testid="stHeader"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    height: 0 !important;
+}
 header[data-testid="stHeader"] {
-    visibility: hidden !important;
-    height: 0px !important;
-    padding: 0px !important;
-    display: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    height: 0 !important;
 }
 [data-testid="stDecoration"] { display: none !important; }
 [data-testid="collapsedControl"] { display: none !important; }
@@ -237,7 +241,7 @@ div.row-widget.stRadio label { cursor: pointer; }
 .top-header-brand {
     position: fixed;
     top: 15px;
-    right: 80px; /* White circle wali jagah chhodkar theek bagal mein */
+    right: 80px; 
     z-index: 9999999;
     display: flex;
     align-items: center;
@@ -271,7 +275,7 @@ div.row-widget.stRadio label { cursor: pointer; }
 div[data-testid="stPopover"] {
     position: fixed !important;
     top: 15px !important;
-    right: 15px !important; /* Ekdum kone mein jahan white circle draw kiya tha */
+    right: 15px !important; 
     z-index: 9999999 !important;
 }
 div[data-testid="stPopover"] > button {
@@ -332,7 +336,6 @@ div[data-testid="stPopover"] > button:hover {
 # ─────────────────────────────────────────────
 # 3. 🔥 TOP RIGHT WORKING MENU (NATIVE POPOVER) 🔥
 # ─────────────────────────────────────────────
-# Yeh "☰" button ekdum white circle wali position (Top-Right edge) par fix hai
 with st.popover("☰"):
     st.markdown("<h4 style='text-align: center; color: #00F2FE;'>MAIN MENU</h4>", unsafe_allow_html=True)
     st.divider()
