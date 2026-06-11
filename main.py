@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 import time
 import pandas as pd
+import html # Naya import HTML characters ko safe rakhne ke liye
 
 # ─────────────────────────────────────────────
 # 1. Environment & Page Config
@@ -11,11 +12,12 @@ import pandas as pd
 load_dotenv()
 api_key = os.getenv("GROQ_API_KEY")
 
+# Sidebar hata diya gaya hai, isliye initial_sidebar_state "collapsed" hi rahega (taaki left mein kuch na khule)
 st.set_page_config(
     page_title="VR Digital Hub AI Boardroom",
     layout="centered",
     page_icon="⚡",
-    initial_sidebar_state="expanded", # BADA CHANGE: Ab menu hamesha samne khula rahega!
+    initial_sidebar_state="collapsed", 
 )
 
 # --- INITIALIZE MEMORY ---
@@ -248,11 +250,10 @@ div.row-widget.stRadio label { cursor: pointer; }
 /* ── DATAFRAME CLEANUP ── */
 [data-testid="stTable"] { background: rgba(14, 17, 26, 0.95); border-radius: 8px; overflow: hidden; }
 
-/* ── SIDEBAR STYLING ── */
-[data-testid="stSidebar"] {
-    background-color: rgba(8, 10, 18, 0.95) !important;
-    border-right: 1px solid #1c2535 !important;
-}
+/* Purane Streamlit left-sidebar ko hamesha ke liye chhipa diya */
+[data-testid="collapsedControl"] { display: none !important; }
+[data-testid="stSidebar"] { display: none !important; }
+
 </style>
 
 <div class="starfield-layer"></div>
@@ -278,51 +279,6 @@ div.row-widget.stRadio label { cursor: pointer; }
     <a href="#">AI Ethics Policy</a>
 </div>
 """, unsafe_allow_html=True)
-
-# ─────────────────────────────────────────────
-# 3. SIDEBAR (Main Menu & History)
-# ─────────────────────────────────────────────
-with st.sidebar:
-    # SUPER ATTRACTIVE MODERN LOGO FONT
-    st.markdown(
-        """
-        <div style="
-            background: linear-gradient(135deg, #FF007A 0%, #7000FF 50%, #00F2FE 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 2rem;
-            font-weight: 900;
-            text-align: center;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            margin-bottom: 5px;
-            letter-spacing: -1px;
-            line-height: 1.1;">
-            VR Digital Hub
-        </div>
-        <div style="
-            color: #00F2FE;
-            font-size: 0.85rem;
-            text-align: center;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 25px;
-            text-shadow: 0 0 10px rgba(0,242,254,0.3);">
-            AI Creative Boardroom
-        </div>
-        <hr style="border: 0; border-top: 1px solid #1c2535; margin-bottom: 20px;">
-        """, unsafe_allow_html=True
-    )
-    
-    st.markdown("### 🗄️ Main Menu / History")
-    
-    if st.session_state.previous_chats:
-        for index, record in enumerate(st.session_state.previous_chats):
-            with st.expander(f"💬 {record['brief'][:22]}..."):
-                st.caption(f"**Category:** {record['category']}")
-                st.write(record['strategy'])
-    else:
-        st.info("No previous chats yet. Start a protocol to save history here!")
 
 # ─────────────────────────────────────────────
 # 4. Main Body Content
@@ -550,3 +506,135 @@ if launch:
 
         except Exception as e:
             st.error(f"⚠️ System Exception during protocol execution:\n\n`{e}`")
+
+
+# ─────────────────────────────────────────────
+# 7. CUSTOM RIGHT MENU (Floating Over the Moon)
+# ─────────────────────────────────────────────
+menu_html = """
+<style>
+.custom-right-menu {
+    position: fixed;
+    top: 2.5rem;
+    right: 2.5rem;
+    width: 330px;
+    max-height: 80vh;
+    background: rgba(255, 255, 255, 0.08); /* Light white glass effect */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 18px;
+    padding: 1.5rem;
+    z-index: 9999; /* Hamesha screen ke upar */
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Custom Scrollbar for Menu */
+.custom-right-menu::-webkit-scrollbar { width: 6px; }
+.custom-right-menu::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
+
+.logo-title {
+    background: linear-gradient(135deg, #FF007A 0%, #7000FF 40%, #00F2FE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.7rem;
+    font-weight: 900;
+    text-align: center;
+    font-family: 'Arial Black', Impact, sans-serif;
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.logo-subtitle {
+    color: #ffffff;
+    font-size: 0.85rem;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+.menu-header {
+    font-size: 0.85rem;
+    color: #e2e8f0;
+    font-weight: 700;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.history-item {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.history-item:hover { 
+    border-color: #00F2FE; 
+    box-shadow: 0 0 10px rgba(0,242,254,0.2); 
+}
+
+.history-item summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #00F2FE;
+    outline: none;
+    display: block;
+}
+
+.history-item p {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: #c4d0e0;
+    line-height: 1.5;
+    white-space: pre-wrap; /* Preserve line breaks */
+    border-top: 1px dashed rgba(255,255,255,0.15);
+    padding-top: 10px;
+}
+
+/* Mobile Screens ke liye adjust (Niche chala jayega taaki app na chhode) */
+@media (max-width: 1200px) {
+    .custom-right-menu {
+        position: relative;
+        top: 0; right: 0; width: 100%; margin-top: 2rem; margin-bottom: 5rem;
+    }
+}
+</style>
+
+<div class="custom-right-menu">
+    <div class="logo-title">VR Digital Hub</div>
+    <div class="logo-subtitle">AI Creative Boardroom</div>
+    <div class="menu-header">🗄️ Main Menu / History</div>
+"""
+
+# Dynamic History Injector
+if not st.session_state.previous_chats:
+    menu_html += '<div style="font-size:0.8rem; color:#aaa; text-align:center;">No previous chats yet. Start a protocol!</div>'
+else:
+    for record in st.session_state.previous_chats:
+        brief_str = record['brief']
+        brief_short = brief_str[:22] + "..." if len(brief_str) > 22 else brief_str
+        
+        safe_brief = html.escape(brief_short)
+        safe_cat = html.escape(record['category'])
+        safe_strategy = html.escape(record['strategy'])
+        
+        menu_html += f"""
+        <details class="history-item">
+            <summary>💬 {safe_brief}</summary>
+            <div style="font-size: 0.75rem; color: #f5a623; margin-top:5px; font-weight:600;">Cat: {safe_cat}</div>
+            <p>{safe_strategy}</p>
+        </details>
+        """
+
+menu_html += "</div>"
+st.markdown(menu_html, unsafe_allow_html=True)
