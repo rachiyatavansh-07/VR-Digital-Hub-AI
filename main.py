@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from openai import OpenAI
 import time
 import pandas as pd
-import html 
 
 # ─────────────────────────────────────────────
 # 1. Environment & Page Config
@@ -229,87 +228,71 @@ div.row-widget.stRadio > div { justify-content: center; gap: 20px; }
 div.row-widget.stRadio label { cursor: pointer; }
 [data-testid="stTable"] { background: rgba(14, 17, 26, 0.95); border-radius: 8px; overflow: hidden; }
 
-/* ── 🔥 NEW: TOP RIGHT GEMINI-STYLE HEADER & MENU 🔥 ── */
-.gemini-header-container {
+/* ── 🔥 NEW: FIXED BRANDING TEXT TOP RIGHT 🔥 ── */
+.top-header-brand {
     position: fixed;
-    top: 15px;
-    right: 20px;
+    top: 20px;
+    right: 80px; /* Leaves room for the hamburger button */
     z-index: 999999;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 8px;
     background: rgba(10, 12, 20, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     padding: 8px 18px;
     border-radius: 30px;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
-
-.gemini-logo-text {
+.brand-highlight {
     background: linear-gradient(135deg, #FF007A 0%, #00F2FE 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-family: 'Arial Black', Impact, sans-serif;
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 900;
-    letter-spacing: 0.5px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.brand-sub {
+    color: #e2e8f0;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
-.gemini-menu-wrapper details {
-    position: relative;
+/* ── 🔥 NATIVE POPOVER (HAMBURGER MENU) FIX 🔥 ── */
+div[data-testid="stPopover"] {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 999999 !important;
 }
-
-.gemini-menu-wrapper summary {
-    list-style: none;
-    cursor: pointer;
-    color: #ffffff;
-    font-size: 1.6rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
+div[data-testid="stPopover"] > button {
+    background: rgba(10, 12, 20, 0.7) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 50% !important;
+    width: 42px !important;
+    height: 42px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+    backdrop-filter: blur(12px) !important;
+    color: #00F2FE !important;
 }
-.gemini-menu-wrapper summary::-webkit-details-marker { display: none; }
-.gemini-menu-wrapper summary:hover { color: #00F2FE; }
-
-/* Dropdown Panel */
-.gemini-dropdown-panel {
-    position: absolute;
-    top: 45px;
-    right: -10px;
-    width: 320px;
-    max-height: 70vh;
-    overflow-y: auto;
-    background: rgba(15, 18, 28, 0.95);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+div[data-testid="stPopover"] > button p {
+    font-size: 1.4rem !important;
+    font-weight: bold !important;
+    margin: 0 !important;
+    color: #00F2FE !important;
 }
-
-/* Scrollbar for Dropdown */
-.gemini-dropdown-panel::-webkit-scrollbar { width: 5px; }
-.gemini-dropdown-panel::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
-
-.history-card {
-    background: rgba(255,255,255,0.05);
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid transparent;
-    transition: 0.3s;
+div[data-testid="stPopover"] > button:hover {
+    border-color: #00F2FE !important;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.4) !important;
 }
-.history-card:hover { background: rgba(255,255,255,0.08); border-color: #00F2FE; }
-.history-title { color: #00F2FE; font-size: 0.85rem; font-weight: bold; margin-bottom: 4px; }
-.history-cat { color: #f5a623; font-size: 0.7rem; margin-bottom: 8px; text-transform: uppercase; font-weight: bold;}
-.history-body { color: #a0aec0; font-size: 0.75rem; max-height: 100px; overflow-y: auto; white-space: pre-wrap; }
-.history-body::-webkit-scrollbar { width: 3px; }
-.history-body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); }
-
 </style>
 
 <div class="starfield-layer"></div>
@@ -324,6 +307,12 @@ div.row-widget.stRadio label { cursor: pointer; }
 </svg>
 <div class="sun-decal"></div>
 <div class="moon-decal"></div>
+
+<div class="top-header-brand">
+    <span class="brand-highlight">VR Digital Hub:</span>
+    <span class="brand-sub">AI Creative Boardroom</span>
+</div>
+
 <div class="footer">
     © 2026 VR Digital Hub AI. Advanced Boardroom Protocol v1.0. | Jaipur, India
     &nbsp;&nbsp;
@@ -334,44 +323,43 @@ div.row-widget.stRadio label { cursor: pointer; }
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
-# 3. 🔥 TOP RIGHT DYNAMIC MENU (GEMINI STYLE) 🔥
+# 3. 🔥 TOP RIGHT WORKING MENU (NATIVE POPOVER) 🔥
 # ─────────────────────────────────────────────
-menu_html = """
-<div class="gemini-header-container">
-    <div class="gemini-logo-text">VR Digital Hub</div>
-    <div class="gemini-menu-wrapper">
-        <details>
-            <summary>☰</summary>
-            <div class="gemini-dropdown-panel">
-                <div style="color:#ffffff; font-size:0.9rem; font-weight:bold; text-align:center; margin-bottom:5px;">AI Creative Boardroom</div>
-                <div style="color:#8aa4be; font-size:0.7rem; text-align:center; text-transform:uppercase; letter-spacing:1px; margin-bottom:15px;">🗄️ Session History</div>
-                <hr style="border-top:1px solid rgba(255,255,255,0.1); margin-bottom:15px;">
-"""
-
-if not st.session_state.previous_chats:
-    menu_html += '<div style="color:#a0aec0; font-size:0.8rem; text-align:center;">No history yet. Start a protocol!</div>'
-else:
-    for record in st.session_state.previous_chats:
-        brief_short = record['brief'][:30] + "..." if len(record['brief']) > 30 else record['brief']
-        safe_brief = html.escape(brief_short)
-        safe_cat = html.escape(record['category'])
-        safe_strat = html.escape(record['strategy']).replace('\n', '<br>')
+with st.popover("☰"):
+    st.markdown("<h4 style='text-align: center; color: #00F2FE;'>MAIN MENU</h4>", unsafe_allow_html=True)
+    
+    # 1. WORKING SEARCH OPTION
+    search_query = st.text_input("🔍 Search Archives", placeholder="Search past concepts...")
+    
+    # 2. WORKING IMAGE UPLOAD OPTION (With Not Found Logic)
+    uploaded_img = st.file_uploader("🖼️ Upload Reference Image", type=["png", "jpg", "jpeg"])
+    if uploaded_img is None:
+        st.info("Status: No image found. Please upload to sync visual data.")
+    else:
+        st.success(f"Image '{uploaded_img.name}' loaded securely.")
         
-        menu_html += f"""
-        <div class="history-card">
-            <div class="history-title">💬 {safe_brief}</div>
-            <div class="history-cat">{safe_cat}</div>
-            <div class="history-body">{safe_strat}</div>
-        </div>
-        """
-
-menu_html += """
-            </div>
-        </details>
-    </div>
-</div>
-"""
-st.markdown(menu_html, unsafe_allow_html=True)
+    st.divider()
+    
+    # 3. WORKING HISTORY OPTION
+    st.markdown("#### 💬 Session History")
+    if not st.session_state.previous_chats:
+        st.caption("No history yet. Start a protocol!")
+    else:
+        # Search Filter Logic
+        filtered_chats = st.session_state.previous_chats
+        if search_query:
+            filtered_chats = [
+                c for c in filtered_chats 
+                if search_query.lower() in c['brief'].lower() or search_query.lower() in c['strategy'].lower()
+            ]
+            
+        if not filtered_chats:
+            st.warning("No matching records found in archives.")
+        else:
+            for record in filtered_chats:
+                with st.expander(f"💬 {record['brief'][:20]}..."):
+                    st.caption(f"Category: {record['category']}")
+                    st.write(record['strategy'])
 
 # ─────────────────────────────────────────────
 # 4. Main Body Content
