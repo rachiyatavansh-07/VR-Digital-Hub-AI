@@ -468,7 +468,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 launch = st.button("Initialize Boardroom Protocol 🚀", use_container_width=True)
 
 # ─────────────────────────────────────────────
-# 5. Dynamic Persona Logic Setup
+# 5. Dynamic Persona Logic Setup & Execution
 # ─────────────────────────────────────────────
 if problem_category == "Business & Marketing":
     a1_name = "Gen-Z Trendsetter"
@@ -513,9 +513,7 @@ else:
     urgency_instruction = "Provide a deep, step-by-step comprehensive blueprint."
     max_tok = 700
 
-# ─────────────────────────────────────────────
-# 6. Agent Execution Logic
-# ─────────────────────────────────────────────
+# --- Agent Execution Logic ---
 if launch:
     if not client_brief.strip():
         st.error("⚠️ Command Error: A problem brief is required to initialise the protocol.")
@@ -635,42 +633,3 @@ if launch:
 
         except Exception as e:
             st.error(f"⚠️ System Exception during protocol execution:\n\n`{e}`")
-
-
-# ─────────────────────────────────────────────
-# 7. BOTTOM HISTORY CARDS (Footer Display)
-# ─────────────────────────────────────────────
-st.divider()
-st.markdown("<br><br>", unsafe_allow_html=True)
-
-footer_col1, footer_col2 = st.columns(2)
-
-with footer_col1:
-    with st.expander("💬 Chats & History (Session Archives)"):
-        st.markdown("<p style='color: #8aa4be; font-size: 0.8rem; font-weight:bold;'>View Session History</p>", unsafe_allow_html=True)
-        search_query_bottom = st.text_input("🔍 Search Past Concepts", placeholder="Search archives...", key="bottom_search")
-        
-        if not st.session_state.previous_chats:
-            st.caption("No history yet. Start a protocol!")
-        else:
-            filtered_chats_bot = st.session_state.previous_chats
-            if search_query_bottom:
-                filtered_chats_bot = [
-                    c for c in filtered_chats_bot 
-                    if search_query_bottom.lower() in c['brief'].lower() or search_query_bottom.lower() in c['strategy'].lower()
-                ]
-            
-            if not filtered_chats_bot:
-                st.warning("No matching records found in archives.")
-            else:
-                for record in filtered_chats_bot:
-                    with st.expander(f"📌 {record['brief'][:20]}..."):
-                        st.caption(f"Category: {record['category']} | Confidence: 97%")
-                        st.write(record['strategy'])
-
-with footer_col2:
-    with st.expander("🖼️ Images (Visual Reference Hub)"):
-        st.markdown("<p style='color: #8aa4be; font-size: 0.8rem; font-weight:bold;'>View Saved Image & Uploads</p>", unsafe_allow_html=True)
-        with st.expander("Saved & Uploaded Images (AI Reference)"):
-            st.error("Status: Image not found. Please upload to sync visual data.")
-            st.file_uploader("Upload Image", type=["png", "jpg", "jpeg"], key="bottom_upload")
