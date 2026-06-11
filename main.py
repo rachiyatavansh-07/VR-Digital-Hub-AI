@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 import time
 import pandas as pd
-import html # Naya import HTML characters ko safe rakhne ke liye
+import html 
 
 # ─────────────────────────────────────────────
 # 1. Environment & Page Config
@@ -12,7 +12,6 @@ import html # Naya import HTML characters ko safe rakhne ke liye
 load_dotenv()
 api_key = os.getenv("GROQ_API_KEY")
 
-# Sidebar hata diya gaya hai, isliye initial_sidebar_state "collapsed" hi rahega (taaki left mein kuch na khule)
 st.set_page_config(
     page_title="VR Digital Hub AI Boardroom",
     layout="centered",
@@ -42,10 +41,10 @@ html, body,
     color: #e2e8f0 !important;
 }
 
-[data-testid="stHeader"] {
-    background: transparent !important;
-    border-bottom: none !important;
-}
+/* ── HIDE DEFAULT STREAMLIT HEADER & SIDEBAR ── */
+[data-testid="stHeader"] { display: none !important; }
+[data-testid="collapsedControl"] { display: none !important; }
+[data-testid="stSidebar"] { display: none !important; }
 
 /* ── GENTLE TWINKLE EFFECT ───────────────── */
 @keyframes gentleBlink {
@@ -189,34 +188,18 @@ h1 {
     margin-bottom: 0.3rem !important;
 }
 
-.subtitle {
-    text-align: center; color: #8a9ab8; font-size: 0.88rem; line-height: 1.5; margin-bottom: 1.5rem;
-}
+.subtitle { text-align: center; color: #8a9ab8; font-size: 0.88rem; line-height: 1.5; margin-bottom: 1.5rem; }
 hr { border: none !important; border-top: 1px solid #1c2535 !important; margin: 1.5rem 0 !important; }
 
-[data-testid="stTextInput"] label, label {
-    color: #8aa4be !important; font-size: 0.85rem !important; font-weight: 600 !important; text-transform: uppercase !important;
-}
-[data-testid="stTextInput"] input {
-    background-color: rgba(8, 10, 18, 0.95) !important; border: 1px solid #1e3250 !important; border-radius: 8px !important;
-    color: #e2e8f0 !important; font-size: 0.94rem !important; padding: 0.65rem 1rem !important;
-}
-[data-testid="stTextInput"] input:focus {
-    border-color: #00F2FE !important; box-shadow: 0 0 0 2px rgba(0, 242, 254, 0.15) !important;
-}
+[data-testid="stTextInput"] label, label { color: #8aa4be !important; font-size: 0.85rem !important; font-weight: 600 !important; text-transform: uppercase !important; }
+[data-testid="stTextInput"] input { background-color: rgba(8, 10, 18, 0.95) !important; border: 1px solid #1e3250 !important; border-radius: 8px !important; color: #e2e8f0 !important; font-size: 0.94rem !important; padding: 0.65rem 1rem !important; }
+[data-testid="stTextInput"] input:focus { border-color: #00F2FE !important; box-shadow: 0 0 0 2px rgba(0, 242, 254, 0.15) !important; }
 
-[data-testid="stButton"] > button {
-    background: linear-gradient(90deg, #004f68 0%, #006e90 40%, #00a8c4 100%) !important;
-    color: #ffffff !important; border: 1px solid #00b4cc !important; border-radius: 8px !important;
-    font-weight: 700 !important; font-size: 0.98rem !important; padding: 0.72rem 1.5rem !important; width: 100% !important;
-    box-shadow: 0 0 20px rgba(0, 180, 204, 0.28) !important;
-}
+[data-testid="stButton"] > button { background: linear-gradient(90deg, #004f68 0%, #006e90 40%, #00a8c4 100%) !important; color: #ffffff !important; border: 1px solid #00b4cc !important; border-radius: 8px !important; font-weight: 700 !important; font-size: 0.98rem !important; padding: 0.72rem 1.5rem !important; width: 100% !important; box-shadow: 0 0 20px rgba(0, 180, 204, 0.28) !important; }
 [data-testid="stButton"] > button:hover { box-shadow: 0 0 36px rgba(0, 242, 254, 0.55) !important; }
 
 /* ── AGENT CARDS BLOCK ───────────────────── */
-.agent-card {
-    background: rgba(10, 13, 22, 0.90); border-radius: 10px; margin-bottom: 1.1rem; overflow: hidden; border: 1px solid #1c2a3e;
-}
+.agent-card { background: rgba(10, 13, 22, 0.90); border-radius: 10px; margin-bottom: 1.1rem; overflow: hidden; border: 1px solid #1c2a3e; }
 .agent-header { padding: 0.5rem 1rem; font-size: 0.80rem; font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; }
 .agent-body { background: rgba(14, 17, 26, 0.95); padding: 0.85rem 1rem; font-size: 0.91rem; line-height: 1.68; color: #c4d0e0; }
 .agent-alpha .agent-header { background: #00F2FE; color: #000; } .agent-alpha { border-color: #00b8cc; }
@@ -224,13 +207,11 @@ hr { border: none !important; border-top: 1px solid #1c2535 !important; margin: 
 .agent-prime .agent-header { background: #10b981; color: #000; } .agent-prime { border-color: #0a7a55; }
 
 [data-testid="stStatusWidget"] { background: rgba(8, 11, 20, 0.92) !important; border: 1px solid #00b4cc !important; border-radius: 8px !important; }
-
 .complete-banner { padding: 13px 20px; background: rgba(0, 242, 254, 0.06); border: 1px solid #00b4cc; border-radius: 10px; text-align: center; color: #00F2FE; margin-top: 1.2rem; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; }
 
 /* ── FOOTER ───────────────────────────────── */
 .footer { position: fixed; left: 0; bottom: 0; width: 100%; background: rgba(3, 4, 8, 0.97); color: #3d4f62; text-align: center; padding: 10px 0 8px; border-top: 1px solid #0e1420; font-size: 11px; z-index: 999; }
 .footer a { color: #3d5468; text-decoration: none; margin: 0 10px; } .footer a:hover { color: #00F2FE; }
-
 #MainMenu, [data-testid="stToolbar"], footer[data-testid="stBottom"], [data-testid="stDecoration"] { visibility: hidden !important; height: 0 !important; }
 [data-testid="stAlert"] { background: transparent !important; border: none !important; padding: 0 !important; }
 
@@ -246,18 +227,92 @@ hr { border: none !important; border-top: 1px solid #1c2535 !important; margin: 
 /* ── GEMINI STYLE SELECTOR CENTERING ── */
 div.row-widget.stRadio > div { justify-content: center; gap: 20px; }
 div.row-widget.stRadio label { cursor: pointer; }
-
-/* ── DATAFRAME CLEANUP ── */
 [data-testid="stTable"] { background: rgba(14, 17, 26, 0.95); border-radius: 8px; overflow: hidden; }
 
-/* Purane Streamlit left-sidebar ko hamesha ke liye chhipa diya */
-[data-testid="collapsedControl"] { display: none !important; }
-[data-testid="stSidebar"] { display: none !important; }
+/* ── 🔥 NEW: TOP RIGHT GEMINI-STYLE HEADER & MENU 🔥 ── */
+.gemini-header-container {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(10, 12, 20, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 8px 18px;
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.gemini-logo-text {
+    background: linear-gradient(135deg, #FF007A 0%, #00F2FE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Arial Black', Impact, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.gemini-menu-wrapper details {
+    position: relative;
+}
+
+.gemini-menu-wrapper summary {
+    list-style: none;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+.gemini-menu-wrapper summary::-webkit-details-marker { display: none; }
+.gemini-menu-wrapper summary:hover { color: #00F2FE; }
+
+/* Dropdown Panel */
+.gemini-dropdown-panel {
+    position: absolute;
+    top: 45px;
+    right: -10px;
+    width: 320px;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: rgba(15, 18, 28, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+}
+
+/* Scrollbar for Dropdown */
+.gemini-dropdown-panel::-webkit-scrollbar { width: 5px; }
+.gemini-dropdown-panel::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+
+.history-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid transparent;
+    transition: 0.3s;
+}
+.history-card:hover { background: rgba(255,255,255,0.08); border-color: #00F2FE; }
+.history-title { color: #00F2FE; font-size: 0.85rem; font-weight: bold; margin-bottom: 4px; }
+.history-cat { color: #f5a623; font-size: 0.7rem; margin-bottom: 8px; text-transform: uppercase; font-weight: bold;}
+.history-body { color: #a0aec0; font-size: 0.75rem; max-height: 100px; overflow-y: auto; white-space: pre-wrap; }
+.history-body::-webkit-scrollbar { width: 3px; }
+.history-body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); }
 
 </style>
 
 <div class="starfield-layer"></div>
-
 <svg class="constellation-lines" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
   <line x1="71" y1="10" x2="76" y2="14" stroke="rgba(168,216,255,0.4)" stroke-width="0.15"/>
   <line x1="76" y1="14" x2="81" y2="9"  stroke="rgba(168,216,255,0.4)" stroke-width="0.15"/>
@@ -267,10 +322,8 @@ div.row-widget.stRadio label { cursor: pointer; }
   <line x1="17" y1="48" x2="14" y2="44" stroke="rgba(168,216,255,0.4)" stroke-width="0.15"/>
   <line x1="14" y1="44" x2="10" y2="47" stroke="rgba(168,216,255,0.4)" stroke-width="0.15"/>
 </svg>
-
 <div class="sun-decal"></div>
 <div class="moon-decal"></div>
-
 <div class="footer">
     © 2026 VR Digital Hub AI. Advanced Boardroom Protocol v1.0. | Jaipur, India
     &nbsp;&nbsp;
@@ -279,6 +332,46 @@ div.row-widget.stRadio label { cursor: pointer; }
     <a href="#">AI Ethics Policy</a>
 </div>
 """, unsafe_allow_html=True)
+
+# ─────────────────────────────────────────────
+# 3. 🔥 TOP RIGHT DYNAMIC MENU (GEMINI STYLE) 🔥
+# ─────────────────────────────────────────────
+menu_html = """
+<div class="gemini-header-container">
+    <div class="gemini-logo-text">VR Digital Hub</div>
+    <div class="gemini-menu-wrapper">
+        <details>
+            <summary>☰</summary>
+            <div class="gemini-dropdown-panel">
+                <div style="color:#ffffff; font-size:0.9rem; font-weight:bold; text-align:center; margin-bottom:5px;">AI Creative Boardroom</div>
+                <div style="color:#8aa4be; font-size:0.7rem; text-align:center; text-transform:uppercase; letter-spacing:1px; margin-bottom:15px;">🗄️ Session History</div>
+                <hr style="border-top:1px solid rgba(255,255,255,0.1); margin-bottom:15px;">
+"""
+
+if not st.session_state.previous_chats:
+    menu_html += '<div style="color:#a0aec0; font-size:0.8rem; text-align:center;">No history yet. Start a protocol!</div>'
+else:
+    for record in st.session_state.previous_chats:
+        brief_short = record['brief'][:30] + "..." if len(record['brief']) > 30 else record['brief']
+        safe_brief = html.escape(brief_short)
+        safe_cat = html.escape(record['category'])
+        safe_strat = html.escape(record['strategy']).replace('\n', '<br>')
+        
+        menu_html += f"""
+        <div class="history-card">
+            <div class="history-title">💬 {safe_brief}</div>
+            <div class="history-cat">{safe_cat}</div>
+            <div class="history-body">{safe_strat}</div>
+        </div>
+        """
+
+menu_html += """
+            </div>
+        </details>
+    </div>
+</div>
+"""
+st.markdown(menu_html, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
 # 4. Main Body Content
@@ -362,7 +455,6 @@ else: # Personal Life Advice
     a3_prompt = "You are a Holistic Therapist synthesizing philosophical peace and actionable discipline into a life plan."
     f1, f2, f3 = "Mindfulness & Peace", "Action & Discipline", "Balanced Life Plan"
 
-# Setup Urgency
 if urgency_level == "Quick Brainstorm (Brief)":
     urgency_instruction = "Keep your response brief, fast-paced, and bulleted."
     max_tok = 250
@@ -380,10 +472,7 @@ if launch:
         st.error("⚠️ Security Error: GROQ_API_KEY not found. Ensure your .env file is configured.")
     else:
         try:
-            client = OpenAI(
-                api_key=api_key,
-                base_url="https://api.groq.com/openai/v1",
-            )
+            client = OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
 
             with st.status(f"Initializing {engine_mode} Subroutines…", expanded=True) as status:
                 st.write("🔗 Establishing secure neural uplink…")
@@ -398,18 +487,13 @@ if launch:
                 time.sleep(0.30)
                 st.write(f"🧠 Engaging {engine_mode.split()[1]} algorithm — compiling results…")
                 time.sleep(0.20)
-                status.update(
-                    label="✅ Strategic Blueprint Synthesized — Boardroom Online.",
-                    state="complete",
-                    expanded=False,
-                )
+                status.update(label="✅ Strategic Blueprint Synthesized — Boardroom Online.", state="complete", expanded=False)
 
             st.divider()
             
             # --- AGENT 1 ---
             resp1 = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
-                max_tokens=250,
+                model="llama-3.1-8b-instant", max_tokens=250,
                 messages=[
                     {"role": "system", "content": a1_prompt},
                     {"role": "user", "content": f"Address this brief: {client_brief}. Keep it short and in your persona."},
@@ -421,15 +505,13 @@ if launch:
                 f"""<div class="agent-card agent-alpha">
                     <div class="agent-header">AGENT 1: {a1_name}</div>
                     <div class="agent-body">{alpha_text}</div>
-                </div>""",
-                unsafe_allow_html=True,
+                </div>""", unsafe_allow_html=True,
             )
             time.sleep(0.25)
 
             # --- AGENT 2 ---
             resp2 = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
-                max_tokens=250,
+                model="llama-3.1-8b-instant", max_tokens=250,
                 messages=[
                     {"role": "system", "content": a2_prompt},
                     {"role": "user", "content": f"Brief: {client_brief}\nAgent 1 said: '{alpha_text}'. Give your strict counter-perspective."},
@@ -441,8 +523,7 @@ if launch:
                 f"""<div class="agent-card agent-beta">
                     <div class="agent-header">AGENT 2: {a2_name}</div>
                     <div class="agent-body">{beta_text}</div>
-                </div>""",
-                unsafe_allow_html=True,
+                </div>""", unsafe_allow_html=True,
             )
             time.sleep(0.25)
 
@@ -450,8 +531,7 @@ if launch:
             prime_sys = f"{a3_prompt} {urgency_instruction} IMPORTANT: At the end, add: 'Technical Note: This framework is designed to be integrated with Microsoft Fabric IQ for real-time enterprise data grounding.'"
             
             resp3 = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
-                max_tokens=max_tok,
+                model="llama-3.1-8b-instant", max_tokens=max_tok,
                 messages=[
                     {"role": "system", "content": prime_sys},
                     {"role": "user", "content": f"Brief: {client_brief}\n\nAgent 1 ({a1_name}): {alpha_text}\n\nAgent 2 ({a2_name}): {beta_text}\n\nSynthesize the final strategy."},
@@ -463,8 +543,7 @@ if launch:
                 f"""<div class="agent-card agent-prime">
                     <div class="agent-header">AGENT 3: {a3_name}</div>
                     <div class="agent-body">{prime_text}</div>
-                </div>""",
-                unsafe_allow_html=True,
+                </div>""", unsafe_allow_html=True,
             )
 
             # --- DECISION ORCHESTRATION & AUDIT TRAIL ---
@@ -482,8 +561,7 @@ if launch:
             st.markdown(
                 "<div class='complete-banner'>"
                 "✅ &nbsp; Governance Check Passed: Strategy unlocked for Executive Sign-off."
-                "</div>",
-                unsafe_allow_html=True,
+                "</div>", unsafe_allow_html=True,
             )
 
             # --- SAVE CURRENT CHAT TO HISTORY ---
@@ -506,135 +584,3 @@ if launch:
 
         except Exception as e:
             st.error(f"⚠️ System Exception during protocol execution:\n\n`{e}`")
-
-
-# ─────────────────────────────────────────────
-# 7. CUSTOM RIGHT MENU (Floating Over the Moon)
-# ─────────────────────────────────────────────
-menu_html = """
-<style>
-.custom-right-menu {
-    position: fixed;
-    top: 2.5rem;
-    right: 2.5rem;
-    width: 330px;
-    max-height: 80vh;
-    background: rgba(255, 255, 255, 0.08); /* Light white glass effect */
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 18px;
-    padding: 1.5rem;
-    z-index: 9999; /* Hamesha screen ke upar */
-    overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-}
-
-/* Custom Scrollbar for Menu */
-.custom-right-menu::-webkit-scrollbar { width: 6px; }
-.custom-right-menu::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
-
-.logo-title {
-    background: linear-gradient(135deg, #FF007A 0%, #7000FF 40%, #00F2FE 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: 1.7rem;
-    font-weight: 900;
-    text-align: center;
-    font-family: 'Arial Black', Impact, sans-serif;
-    margin-bottom: 0.3rem;
-    line-height: 1.2;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-}
-
-.logo-subtitle {
-    color: #ffffff;
-    font-size: 0.85rem;
-    text-align: center;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 1.5rem;
-    text-shadow: 0 0 8px rgba(255,255,255,0.5);
-}
-
-.menu-header {
-    font-size: 0.85rem;
-    color: #e2e8f0;
-    font-weight: 700;
-    margin-bottom: 15px;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    padding-bottom: 8px;
-    text-transform: uppercase;
-}
-
-.history-item {
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px;
-    margin-bottom: 10px;
-    padding: 12px;
-    transition: all 0.3s ease;
-}
-
-.history-item:hover { 
-    border-color: #00F2FE; 
-    box-shadow: 0 0 10px rgba(0,242,254,0.2); 
-}
-
-.history-item summary {
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #00F2FE;
-    outline: none;
-    display: block;
-}
-
-.history-item p {
-    margin-top: 10px;
-    font-size: 0.8rem;
-    color: #c4d0e0;
-    line-height: 1.5;
-    white-space: pre-wrap; /* Preserve line breaks */
-    border-top: 1px dashed rgba(255,255,255,0.15);
-    padding-top: 10px;
-}
-
-/* Mobile Screens ke liye adjust (Niche chala jayega taaki app na chhode) */
-@media (max-width: 1200px) {
-    .custom-right-menu {
-        position: relative;
-        top: 0; right: 0; width: 100%; margin-top: 2rem; margin-bottom: 5rem;
-    }
-}
-</style>
-
-<div class="custom-right-menu">
-    <div class="logo-title">VR Digital Hub</div>
-    <div class="logo-subtitle">AI Creative Boardroom</div>
-    <div class="menu-header">🗄️ Main Menu / History</div>
-"""
-
-# Dynamic History Injector
-if not st.session_state.previous_chats:
-    menu_html += '<div style="font-size:0.8rem; color:#aaa; text-align:center;">No previous chats yet. Start a protocol!</div>'
-else:
-    for record in st.session_state.previous_chats:
-        brief_str = record['brief']
-        brief_short = brief_str[:22] + "..." if len(brief_str) > 22 else brief_str
-        
-        safe_brief = html.escape(brief_short)
-        safe_cat = html.escape(record['category'])
-        safe_strategy = html.escape(record['strategy'])
-        
-        menu_html += f"""
-        <details class="history-item">
-            <summary>💬 {safe_brief}</summary>
-            <div style="font-size: 0.75rem; color: #f5a623; margin-top:5px; font-weight:600;">Cat: {safe_cat}</div>
-            <p>{safe_strategy}</p>
-        </details>
-        """
-
-menu_html += "</div>"
-st.markdown(menu_html, unsafe_allow_html=True)
