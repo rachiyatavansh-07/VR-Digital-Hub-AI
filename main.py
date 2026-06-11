@@ -23,7 +23,7 @@ if "previous_chats" not in st.session_state:
     st.session_state.previous_chats = []
 
 # ─────────────────────────────────────────────
-# 2. Global CSS — Full Cosmic Theme (100% UNTOUCHED ORIGINAL)
+# 2. Global CSS — Full Cosmic Theme (100% UNTOUCHED ORIGINAL) + NEW HEADER FIX
 # ─────────────────────────────────────────────
 st.markdown("""
 <style>
@@ -40,12 +40,12 @@ html, body,
     color: #e2e8f0 !important;
 }
 
-/* ── HIDE DEFAULT STREAMLIT OVERLAPS (FIX FOR HIDDEN TITLE) ── */
-[data-testid="stHeader"] { 
-    background: transparent !important; 
-    box-shadow: none !important; 
-    z-index: 0 !important; 
-    pointer-events: none !important;
+/* ── 🔥 NUCLEAR OPTION: HIDE DEFAULT STREAMLIT HEADER 🔥 ── */
+header[data-testid="stHeader"] {
+    visibility: hidden !important;
+    height: 0px !important;
+    padding: 0px !important;
+    display: none !important;
 }
 [data-testid="stDecoration"] { display: none !important; }
 [data-testid="collapsedControl"] { display: none !important; }
@@ -233,23 +233,22 @@ div.row-widget.stRadio > div { justify-content: center; gap: 20px; }
 div.row-widget.stRadio label { cursor: pointer; }
 [data-testid="stTable"] { background: rgba(14, 17, 26, 0.95); border-radius: 8px; overflow: hidden; }
 
-/* ── 🔥 BRAND NEW: FIXED TOP-RIGHT TITLE & MENU 🔥 ── */
+/* ── 🔥 NEW: FIXED BRANDING TEXT TOP RIGHT 🔥 ── */
 .top-header-brand {
     position: fixed;
-    top: 20px;
-    right: 85px; /* Menu button (☰) ke liye jagah chhodi hai */
-    z-index: 999999;
+    top: 15px;
+    right: 80px; /* White circle wali jagah chhodkar theek bagal mein */
+    z-index: 9999999;
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(10, 12, 20, 0.6);
+    background: rgba(10, 12, 20, 0.7);
     padding: 8px 18px;
     border-radius: 30px;
     border: 1px solid rgba(255,255,255,0.15);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    pointer-events: auto;
 }
 .brand-highlight {
     background: linear-gradient(135deg, #FF007A 0%, #00F2FE 100%);
@@ -268,33 +267,38 @@ div.row-widget.stRadio label { cursor: pointer; }
     font-weight: 600;
 }
 
-/* Menu Button Formatting */
+/* ── 🔥 NATIVE POPOVER (HAMBURGER MENU) FIXED TO EXTREME TOP RIGHT 🔥 ── */
 div[data-testid="stPopover"] {
     position: fixed !important;
-    top: 20px !important;
-    right: 20px !important;
+    top: 15px !important;
+    right: 15px !important; /* Ekdum kone mein jahan white circle draw kiya tha */
     z-index: 9999999 !important;
 }
 div[data-testid="stPopover"] > button {
     background: rgba(10, 12, 20, 0.8) !important;
-    border: 1px solid rgba(255,255,255,0.2) !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
     border-radius: 50% !important;
     width: 44px !important;
     height: 44px !important;
+    padding: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
     backdrop-filter: blur(12px) !important;
+    color: #00F2FE !important;
+    transition: all 0.3s ease !important;
 }
 div[data-testid="stPopover"] > button p {
-    font-size: 1.4rem !important;
+    font-size: 1.5rem !important;
     font-weight: bold !important;
+    margin: 0 !important;
     color: #00F2FE !important;
 }
 div[data-testid="stPopover"] > button:hover {
     border-color: #00F2FE !important;
     box-shadow: 0 0 15px rgba(0, 242, 254, 0.4) !important;
+    transform: scale(1.05) !important;
 }
 </style>
 
@@ -328,12 +332,19 @@ div[data-testid="stPopover"] > button:hover {
 # ─────────────────────────────────────────────
 # 3. 🔥 TOP RIGHT WORKING MENU (NATIVE POPOVER) 🔥
 # ─────────────────────────────────────────────
-# Yeh "☰" button hamesha screen ke Top-Right (Moon ke upar) fix rahega!
+# Yeh "☰" button ekdum white circle wali position (Top-Right edge) par fix hai
 with st.popover("☰"):
     st.markdown("<h4 style='text-align: center; color: #00F2FE;'>MAIN MENU</h4>", unsafe_allow_html=True)
     st.divider()
     
-    # --- OPTION 1: CHATS & HISTORY ---
+    # --- GEMINI STYLE: IMAGES FOLDER ---
+    with st.expander("🖼️ Images"):
+        st.error("Status: No image found. Please upload to sync visual data.")
+        uploaded_img = st.file_uploader("Upload Reference Image", type=["png", "jpg", "jpeg"])
+        if uploaded_img is not None:
+            st.success(f"Image '{uploaded_img.name}' loaded securely.")
+
+    # --- GEMINI STYLE: SEARCH & HISTORY FOLDER ---
     with st.expander("💬 Search & View Chats"):
         search_query = st.text_input("🔍 Search Archives", placeholder="Search past concepts...")
         st.markdown("<br>", unsafe_allow_html=True)
@@ -355,13 +366,6 @@ with st.popover("☰"):
                     with st.expander(f"📌 {record['brief'][:20]}..."):
                         st.caption(f"Category: {record['category']}")
                         st.write(record['strategy'])
-
-    # --- OPTION 2: IMAGES (GEMINI STYLE) ---
-    with st.expander("🖼️ Images"):
-        st.info("Status: No image found. Please upload to sync visual data.")
-        uploaded_img = st.file_uploader("Upload Reference Image", type=["png", "jpg", "jpeg"])
-        if uploaded_img is not None:
-            st.success(f"Image '{uploaded_img.name}' loaded securely.")
 
 # ─────────────────────────────────────────────
 # 4. Main Body Content
