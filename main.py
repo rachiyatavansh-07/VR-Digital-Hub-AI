@@ -40,8 +40,14 @@ html, body,
     color: #e2e8f0 !important;
 }
 
-/* ── HIDE DEFAULT STREAMLIT HEADER & SIDEBAR ── */
-[data-testid="stHeader"] { display: none !important; }
+/* ── HIDE DEFAULT STREAMLIT OVERLAPS (FIX FOR HIDDEN TITLE) ── */
+[data-testid="stHeader"] { 
+    background: transparent !important; 
+    box-shadow: none !important; 
+    z-index: 0 !important; 
+    pointer-events: none !important;
+}
+[data-testid="stDecoration"] { display: none !important; }
 [data-testid="collapsedControl"] { display: none !important; }
 [data-testid="stSidebar"] { display: none !important; }
 
@@ -211,7 +217,7 @@ hr { border: none !important; border-top: 1px solid #1c2535 !important; margin: 
 /* ── FOOTER ───────────────────────────────── */
 .footer { position: fixed; left: 0; bottom: 0; width: 100%; background: rgba(3, 4, 8, 0.97); color: #3d4f62; text-align: center; padding: 10px 0 8px; border-top: 1px solid #0e1420; font-size: 11px; z-index: 999; }
 .footer a { color: #3d5468; text-decoration: none; margin: 0 10px; } .footer a:hover { color: #00F2FE; }
-#MainMenu, [data-testid="stToolbar"], footer[data-testid="stBottom"], [data-testid="stDecoration"] { visibility: hidden !important; height: 0 !important; }
+[data-testid="stToolbar"], footer[data-testid="stBottom"] { visibility: hidden !important; height: 0 !important; }
 [data-testid="stAlert"] { background: transparent !important; border: none !important; padding: 0 !important; }
 
 /* ── MOBILE RESPONSIVENESS FIX ── */
@@ -223,16 +229,15 @@ hr { border: none !important; border-top: 1px solid #1c2535 !important; margin: 
     div.row-widget.stRadio > div { flex-direction: column !important; }
 }
 
-/* ── GEMINI STYLE SELECTOR CENTERING ── */
 div.row-widget.stRadio > div { justify-content: center; gap: 20px; }
 div.row-widget.stRadio label { cursor: pointer; }
 [data-testid="stTable"] { background: rgba(14, 17, 26, 0.95); border-radius: 8px; overflow: hidden; }
 
-/* ── 🔥 NEW: FIXED BRANDING TEXT TOP RIGHT 🔥 ── */
+/* ── 🔥 BRAND NEW: FIXED TOP-RIGHT TITLE & MENU 🔥 ── */
 .top-header-brand {
     position: fixed;
     top: 20px;
-    right: 80px; /* Leaves room for the hamburger button */
+    right: 85px; /* Menu button (☰) ke liye jagah chhodi hai */
     z-index: 999999;
     display: flex;
     align-items: center;
@@ -244,6 +249,7 @@ div.row-widget.stRadio label { cursor: pointer; }
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    pointer-events: auto;
 }
 .brand-highlight {
     background: linear-gradient(135deg, #FF007A 0%, #00F2FE 100%);
@@ -262,31 +268,28 @@ div.row-widget.stRadio label { cursor: pointer; }
     font-weight: 600;
 }
 
-/* ── 🔥 NATIVE POPOVER (HAMBURGER MENU) FIX 🔥 ── */
+/* Menu Button Formatting */
 div[data-testid="stPopover"] {
     position: fixed !important;
     top: 20px !important;
     right: 20px !important;
-    z-index: 999999 !important;
+    z-index: 9999999 !important;
 }
 div[data-testid="stPopover"] > button {
-    background: rgba(10, 12, 20, 0.7) !important;
-    border: 1px solid rgba(255,255,255,0.15) !important;
+    background: rgba(10, 12, 20, 0.8) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
     border-radius: 50% !important;
-    width: 42px !important;
-    height: 42px !important;
-    padding: 0 !important;
+    width: 44px !important;
+    height: 44px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
     backdrop-filter: blur(12px) !important;
-    color: #00F2FE !important;
 }
 div[data-testid="stPopover"] > button p {
     font-size: 1.4rem !important;
     font-weight: bold !important;
-    margin: 0 !important;
     color: #00F2FE !important;
 }
 div[data-testid="stPopover"] > button:hover {
@@ -325,41 +328,40 @@ div[data-testid="stPopover"] > button:hover {
 # ─────────────────────────────────────────────
 # 3. 🔥 TOP RIGHT WORKING MENU (NATIVE POPOVER) 🔥
 # ─────────────────────────────────────────────
+# Yeh "☰" button hamesha screen ke Top-Right (Moon ke upar) fix rahega!
 with st.popover("☰"):
     st.markdown("<h4 style='text-align: center; color: #00F2FE;'>MAIN MENU</h4>", unsafe_allow_html=True)
-    
-    # 1. WORKING SEARCH OPTION
-    search_query = st.text_input("🔍 Search Archives", placeholder="Search past concepts...")
-    
-    # 2. WORKING IMAGE UPLOAD OPTION (With Not Found Logic)
-    uploaded_img = st.file_uploader("🖼️ Upload Reference Image", type=["png", "jpg", "jpeg"])
-    if uploaded_img is None:
-        st.info("Status: No image found. Please upload to sync visual data.")
-    else:
-        st.success(f"Image '{uploaded_img.name}' loaded securely.")
-        
     st.divider()
     
-    # 3. WORKING HISTORY OPTION
-    st.markdown("#### 💬 Session History")
-    if not st.session_state.previous_chats:
-        st.caption("No history yet. Start a protocol!")
-    else:
-        # Search Filter Logic
-        filtered_chats = st.session_state.previous_chats
-        if search_query:
-            filtered_chats = [
-                c for c in filtered_chats 
-                if search_query.lower() in c['brief'].lower() or search_query.lower() in c['strategy'].lower()
-            ]
-            
-        if not filtered_chats:
-            st.warning("No matching records found in archives.")
+    # --- OPTION 1: CHATS & HISTORY ---
+    with st.expander("💬 Search & View Chats"):
+        search_query = st.text_input("🔍 Search Archives", placeholder="Search past concepts...")
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        if not st.session_state.previous_chats:
+            st.caption("No history yet. Start a protocol!")
         else:
-            for record in filtered_chats:
-                with st.expander(f"💬 {record['brief'][:20]}..."):
-                    st.caption(f"Category: {record['category']}")
-                    st.write(record['strategy'])
+            filtered_chats = st.session_state.previous_chats
+            if search_query:
+                filtered_chats = [
+                    c for c in filtered_chats 
+                    if search_query.lower() in c['brief'].lower() or search_query.lower() in c['strategy'].lower()
+                ]
+                
+            if not filtered_chats:
+                st.warning("No matching records found in archives.")
+            else:
+                for record in filtered_chats:
+                    with st.expander(f"📌 {record['brief'][:20]}..."):
+                        st.caption(f"Category: {record['category']}")
+                        st.write(record['strategy'])
+
+    # --- OPTION 2: IMAGES (GEMINI STYLE) ---
+    with st.expander("🖼️ Images"):
+        st.info("Status: No image found. Please upload to sync visual data.")
+        uploaded_img = st.file_uploader("Upload Reference Image", type=["png", "jpg", "jpeg"])
+        if uploaded_img is not None:
+            st.success(f"Image '{uploaded_img.name}' loaded securely.")
 
 # ─────────────────────────────────────────────
 # 4. Main Body Content
