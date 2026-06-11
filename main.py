@@ -321,6 +321,27 @@ footer[data-testid="stBottom"],
     padding: 0 !important;
 }
 </style>
+/* ── MOBILE RESPONSIVENESS FIX ── */
+@media (max-width: 768px) {
+    .sun-decal { 
+        width: 140px !important; 
+        height: 140px !important; 
+        top: -40px !important; 
+        left: -40px !important; 
+    }
+    .moon-decal { 
+        width: 120px !important; 
+        height: 120px !important; 
+        bottom: -30px !important; 
+        right: -30px !important; 
+    }
+    [data-testid="stMainBlockContainer"], .block-container { 
+        margin-top: 2rem !important; 
+        padding-left: 1.5rem !important; 
+        padding-right: 1.5rem !important; 
+    }
+    h1 { font-size: 1.8rem !important; }
+}
 
 <div class="starfield-layer"></div>
 
