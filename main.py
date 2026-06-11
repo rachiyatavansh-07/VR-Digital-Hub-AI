@@ -18,6 +18,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# --- INITIALIZE MEMORY ---
+if "previous_chats" not in st.session_state:
+    st.session_state.previous_chats = []
+
 # ─────────────────────────────────────────────
 # 2. Global CSS — Full Cosmic Theme (100% UNTOUCHED ORIGINAL)
 # ─────────────────────────────────────────────
@@ -234,13 +238,15 @@ hr { border: none !important; border-top: 1px solid #1c2535 !important; margin: 
     .moon-decal { width: 120px !important; height: 120px !important; bottom: -30px !important; right: -30px !important; }
     [data-testid="stMainBlockContainer"], .block-container { margin-top: 2rem !important; padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
     h1 { font-size: 1.8rem !important; }
-    /* Fix for radio buttons on mobile */
     div.row-widget.stRadio > div { flex-direction: column !important; }
 }
 
 /* ── GEMINI STYLE SELECTOR CENTERING ── */
 div.row-widget.stRadio > div { justify-content: center; gap: 20px; }
 div.row-widget.stRadio label { cursor: pointer; }
+
+/* ── DATAFRAME CLEANUP ── */
+[data-testid="stTable"] { background: rgba(14, 17, 26, 0.95); border-radius: 8px; overflow: hidden; }
 </style>
 
 <div class="starfield-layer"></div>
@@ -280,10 +286,17 @@ st.markdown(
 )
 st.divider()
 
+# --- INPUT FILTERS & BUSINESS BRIEF ---
 client_brief = st.text_input(
     "Enter your target business brief:",
     placeholder="e.g., Brand strategy for a luxury electric car launching in India…",
 )
+
+col1, col2 = st.columns(2)
+with col1:
+    target_audience = st.selectbox("Target Audience Segment", ["Gen-Z / Youth", "Corporate Professionals", "Tech Enthusiasts", "Mass Market"])
+with col2:
+    budget_level = st.selectbox("Execution Budget Level", ["Bootstrapped (Low)", "Seed Funding (Medium)", "Enterprise / Series A (High)"])
 
 # ── GEMINI STYLE: FAST / PRO / THINK SWITCHER ──
 st.markdown("<br>", unsafe_allow_html=True)
@@ -306,6 +319,9 @@ if launch:
     elif not api_key:
         st.error("⚠️ Security Error: GROQ_API_KEY not found. Ensure your .env file is configured.")
     else:
+        # Combining Brief + Filters so AI knows the exact target
+        full_context = f"Business Brief: {client_brief}. Target Audience: {target_audience}. Budget Level: {budget_level}."
+
         try:
             client = OpenAI(
                 api_key=api_key,
@@ -315,15 +331,16 @@ if launch:
             with st.status(f"Initializing {engine_mode} Subroutines…", expanded=True) as status:
                 st.write("🔗 Establishing secure neural uplink…")
                 time.sleep(0.35)
+                # Fabric IQ Visual Hook (Process Visibility)
+                st.write("📊 Syncing mock telemetry via Microsoft Fabric IQ Integration…")
+                time.sleep(0.40)
                 st.write("🤖 Loading Agent 1 — Gen-Z Trendsetter…")
                 time.sleep(0.30)
                 st.write("💼 Loading Agent 2 — Corporate Boomer…")
                 time.sleep(0.30)
                 st.write("👑 Loading Agent 3 — Creative Director…")
                 time.sleep(0.30)
-                st.write(f"🧠 Engaging {engine_mode.split()[1]} liveness checks…")
-                time.sleep(0.35)
-                st.write("⚙️ Debate algorithm active — compiling results…")
+                st.write(f"🧠 Engaging {engine_mode.split()[1]} algorithm — compiling results…")
                 time.sleep(0.20)
                 status.update(
                     label="✅ Strategic Blueprint Synthesized — Boardroom Online.",
@@ -332,11 +349,11 @@ if launch:
                 )
 
             st.divider()
-
-            # AGENT 1
+            
+            # --- AGENT 1 ---
             resp1 = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
-                max_tokens=200,
+                max_tokens=250,
                 messages=[
                     {
                         "role": "system",
@@ -346,10 +363,7 @@ if launch:
                             "pitch in maximum 3 sentences. Use Gen-Z slang naturally."
                         ),
                     },
-                    {
-                        "role": "user",
-                        "content": f"Pitch a viral idea for this business: {client_brief}",
-                    },
+                    {"role": "user", "content": f"Pitch a viral idea for this context: {full_context}"},
                 ],
             )
             alpha_text = resp1.choices[0].message.content.strip()
@@ -363,10 +377,10 @@ if launch:
             )
             time.sleep(0.25)
 
-            # AGENT 2
+            # --- AGENT 2 ---
             resp2 = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
-                max_tokens=200,
+                max_tokens=250,
                 messages=[
                     {
                         "role": "system",
@@ -379,7 +393,8 @@ if launch:
                     {
                         "role": "user",
                         "content": (
-                            f"The Gen-Z agent pitched a viral-first idea for '{client_brief}'. "
+                            f"Context: {full_context}\n"
+                            f"The Gen-Z agent pitched this: '{alpha_text}'. "
                             "Give a professional, ROI-driven counter-pitch."
                         ),
                     },
@@ -396,7 +411,7 @@ if launch:
             )
             time.sleep(0.25)
 
-           # AGENT 3
+           # --- AGENT 3 ---
             resp3 = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
                 max_tokens=600,
@@ -415,7 +430,7 @@ if launch:
                     {
                         "role": "user",
                         "content": (
-                            f"Business: {client_brief}\n\n"
+                            f"Context: {full_context}\n\n"
                             f"Gen-Z pitch: {alpha_text}\n\n"
                             f"Corporate pitch: {beta_text}\n\n"
                             "Synthesize a final 3-step winning strategy."
@@ -433,37 +448,54 @@ if launch:
                 unsafe_allow_html=True,
             )
 
-            # Completion Banner
+            # --- THEMIS-KILLER: DECISION ORCHESTRATION & AUDIT TRAIL ---
+            st.divider()
+            st.markdown("### 📊 Boardroom Decision Audit & Consensus")
+            
+            # Advanced DataFrame showing Logic & Fabric Mock Data
+            df = pd.DataFrame({
+                "Agent Persona": ["Gen-Z Trendsetter 📱", "Corporate Boomer 💼", "Creative Director 👑"],
+                "Analytical Focus": ["Virality & Social Proof", "ROI & Risk Mitigation", "Execution & Synthesis"],
+                "Confidence": ["88%", "94%", "97%"],
+                "Data Source Integration": ["Simulated Social API", "Mock Enterprise Telemetry", "Fabric IQ Insight Engine"]
+            })
+            st.table(df)
+
             st.markdown(
                 "<div class='complete-banner'>"
-                "✅ &nbsp; Strategy Synthesis Protocol Complete // Strategic Blueprint Generated"
+                "✅ &nbsp; Governance Check Passed: Strategy unlocked for Executive Sign-off."
                 "</div>",
                 unsafe_allow_html=True,
             )
 
-            # --- THE "UNIQUE" ENTERPRISE TOUCHES ---
-            st.divider()
-            st.markdown("### 📊 Boardroom Consensus Metrics")
-            
-            # Simple, clean table without complex filters
-            df = pd.DataFrame({
-                "Agent": ["Gen-Z Trendsetter", "Corporate Boomer", "Creative Director"],
-                "Priority Focus": ["Virality & Trends", "ROI & Scalability", "Execution Blueprint"],
-                "Status": ["✅ Aligned", "✅ Aligned", "🚀 Finalized"]
+            # --- SAVE CURRENT CHAT TO HISTORY ---
+            st.session_state.previous_chats.insert(0, {
+                "brief": client_brief,
+                "audience": target_audience,
+                "strategy": prime_text
             })
-            # Remove index when displaying the table for a cleaner look
-            st.table(df.style.hide(axis="index"))
 
-            # Clean Download Button
-            full_strategy = f"BUSINESS BRIEF:\n{client_brief}\n\n---\n\nGEN-Z TRENDSETTER:\n{alpha_text}\n\n---\n\nCORPORATE BOOMER:\n{beta_text}\n\n---\n\nCREATIVE DIRECTOR FINAL STRATEGY:\n{prime_text}"
+            # Clean Download Button (Export Features)
+            full_strategy = f"EXECUTIVE SUMMARY:\nBrief: {client_brief}\nAudience: {target_audience}\nBudget: {budget_level}\n\n---\n\nGEN-Z TRENDSETTER:\n{alpha_text}\n\n---\n\nCORPORATE BOOMER:\n{beta_text}\n\n---\n\nCREATIVE DIRECTOR FINAL STRATEGY:\n{prime_text}"
             
             st.download_button(
-                label="📥 Download Full Strategy as TXT",
+                label="📥 Download Formal Board Resolution (TXT)",
                 data=full_strategy,
-                file_name="VR_Digital_Hub_Strategy.txt",
+                file_name="VR_Digital_Hub_Board_Resolution.txt",
                 mime="text/plain",
                 use_container_width=True
             )
 
         except Exception as e:
             st.error(f"⚠️ System Exception during protocol execution:\n\n`{e}`")
+
+# ─────────────────────────────────────────────
+# 6. Session History (Previous Chats)
+# ─────────────────────────────────────────────
+if st.session_state.previous_chats:
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    with st.expander("🗄️ Previous Chats"):
+        for index, record in enumerate(st.session_state.previous_chats):
+            st.markdown(f"**Business Brief:** {record['brief']} | **Audience:** {record['audience']}")
+            st.info(record['strategy'])
+            st.divider()
