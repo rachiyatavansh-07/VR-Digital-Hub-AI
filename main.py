@@ -15,7 +15,7 @@ st.set_page_config(
     page_title="VR Digital Hub AI Boardroom",
     layout="centered",
     page_icon="⚡",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="collapsed", # Sidebar default mein band rahega (Gemini style)
 )
 
 # --- INITIALIZE MEMORY ---
@@ -247,6 +247,12 @@ div.row-widget.stRadio label { cursor: pointer; }
 
 /* ── DATAFRAME CLEANUP ── */
 [data-testid="stTable"] { background: rgba(14, 17, 26, 0.95); border-radius: 8px; overflow: hidden; }
+
+/* ── SIDEBAR STYLING ── */
+[data-testid="stSidebar"] {
+    background-color: rgba(10, 12, 20, 0.98) !important;
+    border-right: 1px solid #1c2535 !important;
+}
 </style>
 
 <div class="starfield-layer"></div>
@@ -272,6 +278,49 @@ div.row-widget.stRadio label { cursor: pointer; }
     <a href="#">AI Ethics Policy</a>
 </div>
 """, unsafe_allow_html=True)
+
+# ─────────────────────────────────────────────
+# 3. SIDEBAR (History & Main Menu - Gemini Style)
+# ─────────────────────────────────────────────
+with st.sidebar:
+    # Modern, Colorful, Unique Font Logo
+    st.markdown(
+        """
+        <div style="
+            background: linear-gradient(to right, #FF007A, #00F2FE, #4FACFE);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-align: center;
+            font-family: 'Arial Black', Gadget, sans-serif;
+            margin-bottom: 5px;
+            line-height: 1.1;">
+            VR Digital Hub
+        </div>
+        <div style="
+            color: #8aa4be;
+            font-size: 0.9rem;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 25px;">
+            AI Creative Boardroom
+        </div>
+        """, unsafe_allow_html=True
+    )
+    
+    st.markdown("### 🗄️ Main Menu / History")
+    
+    if st.session_state.previous_chats:
+        for index, record in enumerate(st.session_state.previous_chats):
+            # Using an expander for each past chat so it looks like a clean menu
+            with st.expander(f"💬 {record['brief'][:22]}..."):
+                st.caption(f"**Category:** {record['category']}")
+                st.write(record['strategy'])
+    else:
+        st.info("No previous chats yet. Start a protocol to save history here!")
 
 # ─────────────────────────────────────────────
 # 4. Main Body Content
@@ -499,14 +548,3 @@ if launch:
 
         except Exception as e:
             st.error(f"⚠️ System Exception during protocol execution:\n\n`{e}`")
-
-# ─────────────────────────────────────────────
-# 7. Session History (Previous Chats)
-# ─────────────────────────────────────────────
-if st.session_state.previous_chats:
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    with st.expander("🗄️ Previous Chats"):
-        for index, record in enumerate(st.session_state.previous_chats):
-            st.markdown(f"**Brief:** {record['brief']} | **Category:** {record['category']}")
-            st.info(record['strategy'])
-            st.divider()
