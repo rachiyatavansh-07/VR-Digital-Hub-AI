@@ -542,7 +542,7 @@ if launch:
             
             # --- AGENT 1 ---
             resp1 = client.chat.completions.create(
-                model="llama-3.1-8b-instant", max_tokens=300,
+                model="llama-3.1-8b-instant", max_tokens=500,
                 messages=[
                     {"role": "system", "content": a1_prompt},
                     {"role": "user", "content": f"Address this brief: {client_brief}. Keep it short and in your persona."},
@@ -560,7 +560,7 @@ if launch:
 
             # --- AGENT 2 ---
             resp2 = client.chat.completions.create(
-                model="llama-3.1-8b-instant", max_tokens=500,
+                model="llama-3.1-8b-instant", max_tokens=700,
                 messages=[
                     {"role": "system", "content": a2_prompt},
                     {"role": "user", "content": f"Brief: {client_brief}\nAgent 1 said: '{alpha_text}'. Give your strict counter-perspective."},
@@ -580,7 +580,7 @@ if launch:
             prime_sys = f"{a3_prompt} {urgency_instruction} IMPORTANT: At the end, add: 'Technical Note: This framework is designed to be integrated with Microsoft Fabric IQ for real-time enterprise data grounding.'"
             
             resp3 = client.chat.completions.create(
-                model="llama-3.1-8b-instant", max_tokens=max_tok,
+                model="llama-3.1-8b-instant", max_tokens=1000,
                 messages=[
                     {"role": "system", "content": prime_sys},
                     {"role": "user", "content": f"Brief: {client_brief}\n\nAgent 1 ({a1_name}): {alpha_text}\n\nAgent 2 ({a2_name}): {beta_text}\n\nSynthesize the final strategy."},
