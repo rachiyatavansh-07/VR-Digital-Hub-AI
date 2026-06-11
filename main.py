@@ -320,7 +320,6 @@ footer[data-testid="stBottom"],
     border: none !important;
     padding: 0 !important;
 }
-</style>
 /* ── MOBILE RESPONSIVENESS FIX ── */
 @media (max-width: 768px) {
     .sun-decal { 
@@ -342,6 +341,8 @@ footer[data-testid="stBottom"],
     }
     h1 { font-size: 1.8rem !important; }
 }
+</style>
+
 
 <div class="starfield-layer"></div>
 
