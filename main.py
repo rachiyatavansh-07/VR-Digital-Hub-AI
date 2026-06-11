@@ -490,7 +490,7 @@ if launch:
            # AGENT 3
             resp3 = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
-                max_tokens=350,
+                max_tokens=600,
                 messages=[
                     {
                         "role": "system",
