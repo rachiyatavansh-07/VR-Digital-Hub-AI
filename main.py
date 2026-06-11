@@ -15,7 +15,7 @@ st.set_page_config(
     page_title="VR Digital Hub AI Boardroom",
     layout="centered",
     page_icon="⚡",
-    initial_sidebar_state="collapsed", # Sidebar default mein band rahega (Gemini style)
+    initial_sidebar_state="expanded", # BADA CHANGE: Ab menu hamesha samne khula rahega!
 )
 
 # --- INITIALIZE MEMORY ---
@@ -250,7 +250,7 @@ div.row-widget.stRadio label { cursor: pointer; }
 
 /* ── SIDEBAR STYLING ── */
 [data-testid="stSidebar"] {
-    background-color: rgba(10, 12, 20, 0.98) !important;
+    background-color: rgba(8, 10, 18, 0.95) !important;
     border-right: 1px solid #1c2535 !important;
 }
 </style>
@@ -280,34 +280,37 @@ div.row-widget.stRadio label { cursor: pointer; }
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
-# 3. SIDEBAR (History & Main Menu - Gemini Style)
+# 3. SIDEBAR (Main Menu & History)
 # ─────────────────────────────────────────────
 with st.sidebar:
-    # Modern, Colorful, Unique Font Logo
+    # SUPER ATTRACTIVE MODERN LOGO FONT
     st.markdown(
         """
         <div style="
-            background: linear-gradient(to right, #FF007A, #00F2FE, #4FACFE);
+            background: linear-gradient(135deg, #FF007A 0%, #7000FF 50%, #00F2FE 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 900;
             text-align: center;
-            font-family: 'Arial Black', Gadget, sans-serif;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
             margin-bottom: 5px;
+            letter-spacing: -1px;
             line-height: 1.1;">
             VR Digital Hub
         </div>
         <div style="
-            color: #8aa4be;
-            font-size: 0.9rem;
+            color: #00F2FE;
+            font-size: 0.85rem;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 25px;">
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(0,242,254,0.3);">
             AI Creative Boardroom
         </div>
+        <hr style="border: 0; border-top: 1px solid #1c2535; margin-bottom: 20px;">
         """, unsafe_allow_html=True
     )
     
@@ -315,7 +318,6 @@ with st.sidebar:
     
     if st.session_state.previous_chats:
         for index, record in enumerate(st.session_state.previous_chats):
-            # Using an expander for each past chat so it looks like a clean menu
             with st.expander(f"💬 {record['brief'][:22]}..."):
                 st.caption(f"**Category:** {record['category']}")
                 st.write(record['strategy'])
