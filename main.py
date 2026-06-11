@@ -469,14 +469,16 @@ if launch:
             resp3 = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
                 max_tokens=350,
-                messages=[
+               messages=[
                     {
                         "role": "system",
                         "content": (
                             "You are Agent 3, the Creative Director. "
                             "Synthesize the Gen-Z and corporate perspectives "
                             "into a decisive, actionable 3-step final strategy. "
-                            "Number the steps clearly. Be bold and specific."
+                            "Number the steps clearly. Be bold and specific. "
+                            "IMPORTANT: At the end of your response, add a short note stating: "
+                            "'Technical Note: This strategy framework is designed to be integrated with Microsoft Fabric IQ for real-time enterprise data grounding.'"
                         ),
                     },
                     {
@@ -489,7 +491,6 @@ if launch:
                         ),
                     },
                 ],
-            )
             prime_text = resp3.choices[0].message.content.strip()
 
             st.markdown(
