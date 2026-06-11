@@ -279,24 +279,30 @@ div.row-widget.stRadio label { cursor: pointer; }
 st.title("The AI Creative Boardroom")
 st.markdown(
     "<div class='subtitle'>"
-    "Gate AI creative creator, replication agents, innovative, and brilliant responses,<br>"
-    "suitable and other focused cards orientation to the AI Creative Boardroom."
+    "Adaptive Universal Protocol: Dynamic agents equipped to handle business,<br>"
+    "tech, creative, and personal challenges in real-time."
     "</div>",
     unsafe_allow_html=True,
 )
 st.divider()
 
-# --- INPUT FILTERS & BUSINESS BRIEF ---
+# --- DYNAMIC INPUT FILTERS & BRIEF ---
 client_brief = st.text_input(
-    "Enter your target business brief:",
-    placeholder="e.g., Brand strategy for a luxury electric car launching in India…",
+    "Enter your problem or target brief:",
+    placeholder="e.g., How to market a new EV, debugging server lag, or writing a novel...",
 )
 
 col1, col2 = st.columns(2)
 with col1:
-    target_audience = st.selectbox("Target Audience Segment", ["Gen-Z / Youth", "Corporate Professionals", "Tech Enthusiasts", "Mass Market"])
+    problem_category = st.selectbox(
+        "Select Problem Category", 
+        ["Business & Marketing", "Tech & Engineering", "Creative Writing", "Personal Life Advice"]
+    )
 with col2:
-    budget_level = st.selectbox("Execution Budget Level", ["Bootstrapped (Low)", "Seed Funding (Medium)", "Enterprise / Series A (High)"])
+    urgency_level = st.selectbox(
+        "Urgency / Detail Level", 
+        ["Quick Brainstorm (Brief)", "Deep Step-by-Step Blueprint"]
+    )
 
 # ── GEMINI STYLE: FAST / PRO / THINK SWITCHER ──
 st.markdown("<br>", unsafe_allow_html=True)
@@ -311,17 +317,61 @@ st.markdown("<br>", unsafe_allow_html=True)
 launch = st.button("Initialize Boardroom Protocol 🚀", use_container_width=True)
 
 # ─────────────────────────────────────────────
-# 5. Agent Execution Logic
+# 5. Dynamic Persona Logic Setup
+# ─────────────────────────────────────────────
+if problem_category == "Business & Marketing":
+    a1_name = "Gen-Z Trendsetter"
+    a1_prompt = "You are a Gen-Z marketing expert obsessed with viral trends and social-first strategies. Speak with energetic modern slang."
+    a2_name = "Corporate Boomer"
+    a2_prompt = "You are a seasoned corporate executive prioritizing ROI, brand safety, and measurable metrics. Speak professionally."
+    a3_name = "Creative Director"
+    a3_prompt = "You are the Creative Director synthesizing viral ideas and corporate ROI into a decisive strategy."
+    f1, f2, f3 = "Virality & Trends", "ROI & Risk Mitigation", "Execution Blueprint"
+    
+elif problem_category == "Tech & Engineering":
+    a1_name = "Senior Hacker"
+    a1_prompt = "You are a fast-moving senior developer obsessed with shipping code quickly, using bleeding-edge tech, and hacky workarounds."
+    a2_name = "Cybersecurity Auditor"
+    a2_prompt = "You are a strict Cybersecurity Auditor focused on scalable architecture, vulnerabilities, and enterprise compliance."
+    a3_name = "Lead Architect"
+    a3_prompt = "You are the Lead IT Architect synthesizing rapid development and strict security into a solid tech roadmap."
+    f1, f2, f3 = "Speed & Innovation", "Security & Compliance", "Scalable Architecture"
+    
+elif problem_category == "Creative Writing":
+    a1_name = "Passionate Author"
+    a1_prompt = "You are a highly creative author focused on deep emotions, world-building, and artistic, poetic flow."
+    a2_name = "Strict Editor"
+    a2_prompt = "You are a pragmatic publishing editor focused on pacing, grammar, structure, and marketability."
+    a3_name = "Publishing Exec"
+    a3_prompt = "You are the Publishing Executive synthesizing the artistic flow and editorial structure into a winning pitch."
+    f1, f2, f3 = "Emotion & Creativity", "Structure & Marketability", "Final Masterpiece"
+
+else: # Personal Life Advice
+    a1_name = "Zen Philosopher"
+    a1_prompt = "You are a peaceful Zen Philosopher focused on mindfulness, letting go, and inner peace."
+    a2_name = "Pragmatic Coach"
+    a2_prompt = "You are a strict Life Coach focused on actionable habits, discipline, and hard truth."
+    a3_name = "Holistic Therapist"
+    a3_prompt = "You are a Holistic Therapist synthesizing philosophical peace and actionable discipline into a life plan."
+    f1, f2, f3 = "Mindfulness & Peace", "Action & Discipline", "Balanced Life Plan"
+
+# Setup Urgency
+if urgency_level == "Quick Brainstorm (Brief)":
+    urgency_instruction = "Keep your response brief, fast-paced, and bulleted."
+    max_tok = 250
+else:
+    urgency_instruction = "Provide a deep, step-by-step comprehensive blueprint."
+    max_tok = 700
+
+# ─────────────────────────────────────────────
+# 6. Agent Execution Logic
 # ─────────────────────────────────────────────
 if launch:
     if not client_brief.strip():
-        st.error("⚠️ Command Error: A business brief is required to initialise the protocol.")
+        st.error("⚠️ Command Error: A problem brief is required to initialise the protocol.")
     elif not api_key:
         st.error("⚠️ Security Error: GROQ_API_KEY not found. Ensure your .env file is configured.")
     else:
-        # Combining Brief + Filters so AI knows the exact target
-        full_context = f"Business Brief: {client_brief}. Target Audience: {target_audience}. Budget Level: {budget_level}."
-
         try:
             client = OpenAI(
                 api_key=api_key,
@@ -331,14 +381,13 @@ if launch:
             with st.status(f"Initializing {engine_mode} Subroutines…", expanded=True) as status:
                 st.write("🔗 Establishing secure neural uplink…")
                 time.sleep(0.35)
-                # Fabric IQ Visual Hook (Process Visibility)
                 st.write("📊 Syncing mock telemetry via Microsoft Fabric IQ Integration…")
                 time.sleep(0.40)
-                st.write("🤖 Loading Agent 1 — Gen-Z Trendsetter…")
+                st.write(f"🤖 Loading Agent 1 — {a1_name}…")
                 time.sleep(0.30)
-                st.write("💼 Loading Agent 2 — Corporate Boomer…")
+                st.write(f"💼 Loading Agent 2 — {a2_name}…")
                 time.sleep(0.30)
-                st.write("👑 Loading Agent 3 — Creative Director…")
+                st.write(f"👑 Loading Agent 3 — {a3_name}…")
                 time.sleep(0.30)
                 st.write(f"🧠 Engaging {engine_mode.split()[1]} algorithm — compiling results…")
                 time.sleep(0.20)
@@ -355,22 +404,15 @@ if launch:
                 model="llama-3.1-8b-instant",
                 max_tokens=250,
                 messages=[
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are Agent 1, a Gen-Z marketing expert obsessed with TikTok, "
-                            "viral trends, and social-first strategies. Give a punchy, energetic "
-                            "pitch in maximum 3 sentences. Use Gen-Z slang naturally."
-                        ),
-                    },
-                    {"role": "user", "content": f"Pitch a viral idea for this context: {full_context}"},
+                    {"role": "system", "content": a1_prompt},
+                    {"role": "user", "content": f"Address this brief: {client_brief}. Keep it short and in your persona."},
                 ],
             )
             alpha_text = resp1.choices[0].message.content.strip()
 
             st.markdown(
                 f"""<div class="agent-card agent-alpha">
-                    <div class="agent-header">AGENT 1: Gen-Z Trendsetter</div>
+                    <div class="agent-header">AGENT 1: {a1_name}</div>
                     <div class="agent-body">{alpha_text}</div>
                 </div>""",
                 unsafe_allow_html=True,
@@ -382,82 +424,51 @@ if launch:
                 model="llama-3.1-8b-instant",
                 max_tokens=250,
                 messages=[
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are Agent 2, a seasoned corporate executive (Corporate Boomer). "
-                            "You prioritise ROI, brand equity, and professional credibility. "
-                            "Respond with a measured, data-aware counter-pitch in maximum 3 sentences."
-                        ),
-                    },
-                    {
-                        "role": "user",
-                        "content": (
-                            f"Context: {full_context}\n"
-                            f"The Gen-Z agent pitched this: '{alpha_text}'. "
-                            "Give a professional, ROI-driven counter-pitch."
-                        ),
-                    },
+                    {"role": "system", "content": a2_prompt},
+                    {"role": "user", "content": f"Brief: {client_brief}\nAgent 1 said: '{alpha_text}'. Give your strict counter-perspective."},
                 ],
             )
             beta_text = resp2.choices[0].message.content.strip()
 
             st.markdown(
                 f"""<div class="agent-card agent-beta">
-                    <div class="agent-header">AGENT 2: Corporate Boomer</div>
+                    <div class="agent-header">AGENT 2: {a2_name}</div>
                     <div class="agent-body">{beta_text}</div>
                 </div>""",
                 unsafe_allow_html=True,
             )
             time.sleep(0.25)
 
-           # --- AGENT 3 ---
+           # --- AGENT 3 (PRIME) ---
+            prime_sys = f"{a3_prompt} {urgency_instruction} IMPORTANT: At the end, add: 'Technical Note: This framework is designed to be integrated with Microsoft Fabric IQ for real-time enterprise data grounding.'"
+            
             resp3 = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
-                max_tokens=600,
+                max_tokens=max_tok,
                 messages=[
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are Agent 3, the Creative Director. "
-                            "Synthesize the Gen-Z and corporate perspectives "
-                            "into a decisive, actionable 3-step final strategy. "
-                            "Number the steps clearly. Be bold and specific. "
-                            "IMPORTANT: At the end of your response, add a short note stating: "
-                            "'Technical Note: This strategy framework is designed to be integrated with Microsoft Fabric IQ for real-time enterprise data grounding.'"
-                        ),
-                    },
-                    {
-                        "role": "user",
-                        "content": (
-                            f"Context: {full_context}\n\n"
-                            f"Gen-Z pitch: {alpha_text}\n\n"
-                            f"Corporate pitch: {beta_text}\n\n"
-                            "Synthesize a final 3-step winning strategy."
-                        ),
-                    }
+                    {"role": "system", "content": prime_sys},
+                    {"role": "user", "content": f"Brief: {client_brief}\n\nAgent 1 ({a1_name}): {alpha_text}\n\nAgent 2 ({a2_name}): {beta_text}\n\nSynthesize the final strategy."},
                 ]
             )
             prime_text = resp3.choices[0].message.content.strip()
 
             st.markdown(
                 f"""<div class="agent-card agent-prime">
-                    <div class="agent-header">AGENT 3: Creative Director</div>
+                    <div class="agent-header">AGENT 3: {a3_name}</div>
                     <div class="agent-body">{prime_text}</div>
                 </div>""",
                 unsafe_allow_html=True,
             )
 
-            # --- THEMIS-KILLER: DECISION ORCHESTRATION & AUDIT TRAIL ---
+            # --- DECISION ORCHESTRATION & AUDIT TRAIL ---
             st.divider()
             st.markdown("### 📊 Boardroom Decision Audit & Consensus")
             
-            # Advanced DataFrame showing Logic & Fabric Mock Data
             df = pd.DataFrame({
-                "Agent Persona": ["Gen-Z Trendsetter 📱", "Corporate Boomer 💼", "Creative Director 👑"],
-                "Analytical Focus": ["Virality & Social Proof", "ROI & Risk Mitigation", "Execution & Synthesis"],
+                "Agent Persona": [f"{a1_name} 🔴", f"{a2_name} 🟠", f"{a3_name} 🟢"],
+                "Analytical Focus": [f1, f2, f3],
                 "Confidence": ["88%", "94%", "97%"],
-                "Data Source Integration": ["Simulated Social API", "Mock Enterprise Telemetry", "Fabric IQ Insight Engine"]
+                "Data Source Integration": ["Simulated Domain API", "Mock Telemetry", "Fabric IQ Insight Engine"]
             })
             st.table(df)
 
@@ -471,12 +482,12 @@ if launch:
             # --- SAVE CURRENT CHAT TO HISTORY ---
             st.session_state.previous_chats.insert(0, {
                 "brief": client_brief,
-                "audience": target_audience,
+                "category": problem_category,
                 "strategy": prime_text
             })
 
-            # Clean Download Button (Export Features)
-            full_strategy = f"EXECUTIVE SUMMARY:\nBrief: {client_brief}\nAudience: {target_audience}\nBudget: {budget_level}\n\n---\n\nGEN-Z TRENDSETTER:\n{alpha_text}\n\n---\n\nCORPORATE BOOMER:\n{beta_text}\n\n---\n\nCREATIVE DIRECTOR FINAL STRATEGY:\n{prime_text}"
+            # Export Features
+            full_strategy = f"EXECUTIVE SUMMARY:\nBrief: {client_brief}\nCategory: {problem_category}\nUrgency: {urgency_level}\n\n---\n\n{a1_name}:\n{alpha_text}\n\n---\n\n{a2_name}:\n{beta_text}\n\n---\n\n{a3_name} FINAL STRATEGY:\n{prime_text}"
             
             st.download_button(
                 label="📥 Download Formal Board Resolution (TXT)",
@@ -490,12 +501,12 @@ if launch:
             st.error(f"⚠️ System Exception during protocol execution:\n\n`{e}`")
 
 # ─────────────────────────────────────────────
-# 6. Session History (Previous Chats)
+# 7. Session History (Previous Chats)
 # ─────────────────────────────────────────────
 if st.session_state.previous_chats:
     st.markdown("<br><br>", unsafe_allow_html=True)
     with st.expander("🗄️ Previous Chats"):
         for index, record in enumerate(st.session_state.previous_chats):
-            st.markdown(f"**Business Brief:** {record['brief']} | **Audience:** {record['audience']}")
+            st.markdown(f"**Brief:** {record['brief']} | **Category:** {record['category']}")
             st.info(record['strategy'])
             st.divider()
