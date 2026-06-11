@@ -465,11 +465,11 @@ if launch:
             )
             time.sleep(0.25)
 
-            # AGENT 3
+           # AGENT 3
             resp3 = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
                 max_tokens=350,
-               messages=[
+                messages=[
                     {
                         "role": "system",
                         "content": (
@@ -488,10 +488,11 @@ if launch:
                             f"Gen-Z pitch: {alpha_text}\n\n"
                             f"Corporate pitch: {beta_text}\n\n"
                             "Synthesize a final 3-step winning strategy."
-                        },
-                    ]
-                 )
-                  prime_text = resp3.choices[0].message.content.strip()
+                        ),
+                    }
+                ]
+            )
+            prime_text = resp3.choices[0].message.content.strip()
 
             st.markdown(
                 f"""<div class="agent-card agent-prime">
